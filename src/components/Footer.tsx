@@ -13,7 +13,7 @@ const Footer = () => {
             <img 
               src={securvioLogo} 
               alt="Securvio" 
-              className="h-8 w-auto mb-4"
+              className="h-12 w-auto mb-4"
             />
             <p className="text-muted-foreground text-sm max-w-md">
               AI-powered security consulting that makes expert-level security 
