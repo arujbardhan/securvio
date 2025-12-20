@@ -1,12 +1,36 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import DevSecOpsSection from "@/components/DevSecOpsSection";
+import ServicesSection from "@/components/ServicesSection";
+import AboutSection from "@/components/AboutSection";
+import Footer from "@/components/Footer";
+import ChatBot from "@/components/ChatBot";
 
 const Index = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const handleOpenChat = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleToggleChat = () => {
+    setIsChatOpen((prev) => !prev);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main>
+        <HeroSection onOpenChat={handleOpenChat} />
+        <HowItWorksSection />
+        <DevSecOpsSection />
+        <ServicesSection onOpenChat={handleOpenChat} />
+        <AboutSection />
+      </main>
+      <Footer />
+      <ChatBot isOpen={isChatOpen} onToggle={handleToggleChat} />
     </div>
   );
 };
