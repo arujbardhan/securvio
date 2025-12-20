@@ -7,6 +7,7 @@ const navLinks = [
   { name: "DevSecOps", href: "#devsecops" },
   { name: "How It Works", href: "#how-it-works" },
   { name: "About", href: "#about" },
+  { name: "Contact", href: "#contact" },
 ];
 
 const Navbar = () => {
@@ -15,13 +16,13 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
       <div className="container mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
             <img 
               src={securvioLogo} 
               alt="Securvio" 
-              className="h-8 md:h-10 w-auto"
+              className="h-12 md:h-16 w-auto"
             />
           </a>
 

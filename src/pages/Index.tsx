@@ -5,6 +5,7 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import DevSecOpsSection from "@/components/DevSecOpsSection";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
 
@@ -28,6 +29,7 @@ const Index = () => {
         <DevSecOpsSection />
         <ServicesSection onOpenChat={handleOpenChat} />
         <AboutSection />
+        <ContactSection />
       </main>
       <Footer />
       <ChatBot isOpen={isChatOpen} onToggle={handleToggleChat} />

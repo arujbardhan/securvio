@@ -1,4 +1,5 @@
 import { Brain, Database, ShieldCheck, FileText } from "lucide-react";
+import ParallaxCard from "./ParallaxCard";
 
 const steps = [
   {
@@ -44,23 +45,36 @@ const HowItWorksSection = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((step, index) => (
-            <div
-              key={step.number}
-              className="group glass-card p-6 hover:border-primary/50 transition-all duration-300"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                  <step.icon className="w-6 h-6" />
+            <ParallaxCard key={step.number} intensity={10}>
+              <div
+                className="group glass-card p-6 hover:border-primary/50 transition-all duration-300 h-full"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                    <step.icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-4xl font-display font-bold text-border/50 group-hover:text-primary/30 transition-colors">
+                    {step.number}
+                  </span>
                 </div>
-                <span className="text-4xl font-display font-bold text-border/50 group-hover:text-primary/30 transition-colors">
-                  {step.number}
-                </span>
+                <h3 className="text-xl font-display font-semibold mb-2">{step.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
               </div>
-              <h3 className="text-xl font-display font-semibold mb-2">{step.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-            </div>
+            </ParallaxCard>
           ))}
+        </div>
+
+        {/* Visual Element */}
+        <div className="mt-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10" />
+          <div className="h-48 md:h-64 rounded-2xl overflow-hidden opacity-40">
+            <img 
+              src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80"
+              alt="AI and cybersecurity concept"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>

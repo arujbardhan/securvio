@@ -1,4 +1,5 @@
 import { GitBranch, Code2, BarChart3, CheckCircle2 } from "lucide-react";
+import ParallaxCard from "./ParallaxCard";
 
 const features = [
   {
@@ -47,40 +48,56 @@ const DevSecOpsSection = () => {
               development the path of least resistance.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              {["GitHub", "GitLab", "Jenkins", "Azure DevOps"].map((tool) => (
-                <span key={tool} className="px-4 py-2 glass-card text-sm text-muted-foreground">
-                  {tool}
-                </span>
-              ))}
+            {/* DevSecOps Visualization */}
+            <div className="relative h-48 md:h-64 rounded-xl overflow-hidden mb-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-card/80 to-transparent z-10" />
+              <img 
+                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80"
+                alt="Code and development"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 z-20 flex items-center p-6">
+                <div>
+                  <p className="text-sm text-primary font-medium mb-2">Integrates with</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["GitHub", "GitLab", "Jenkins", "Azure DevOps"].map((tool) => (
+                      <span 
+                        key={tool} 
+                        className="px-3 py-1.5 bg-background/80 backdrop-blur-sm rounded-lg text-sm text-foreground border border-border/50 hover:border-primary/50 transition-all cursor-default"
+                      >
+                        {tool}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right Content - Feature Cards */}
           <div className="space-y-6">
             {features.map((feature, index) => (
-              <div
-                key={feature.title}
-                className="group glass-card p-6 hover:border-primary/50 transition-all duration-300"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-primary/10 text-primary shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                    <feature.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-display font-semibold mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-4">{feature.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {feature.highlights.map((highlight) => (
-                        <span key={highlight} className="inline-flex items-center gap-1.5 text-xs text-primary">
-                          <CheckCircle2 className="w-3 h-3" />
-                          {highlight}
-                        </span>
-                      ))}
+              <ParallaxCard key={feature.title} intensity={12}>
+                <div className="group glass-card p-6 hover:border-primary/50 transition-all duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 rounded-lg bg-primary/10 text-primary shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <feature.icon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-display font-semibold mb-2">{feature.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4">{feature.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {feature.highlights.map((highlight) => (
+                          <span key={highlight} className="inline-flex items-center gap-1.5 text-xs text-primary">
+                            <CheckCircle2 className="w-3 h-3" />
+                            {highlight}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </ParallaxCard>
             ))}
           </div>
         </div>
