@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Shield, MessageSquare, ArrowRight } from "lucide-react";
 import ParallaxCard from "./ParallaxCard";
+import securvioBanner from "@/assets/securvio-banner.png";
 
 interface HeroSectionProps {
   onOpenChat: () => void;
@@ -93,13 +94,13 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
         </div>
       </div>
 
-      {/* Hero Image - Abstract Security Visualization */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-40 md:h-64 pointer-events-none opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10" />
+      {/* Hero Banner */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-48 md:h-80 pointer-events-none opacity-40">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
         <img 
-          src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80" 
-          alt="Security network visualization"
-          className="w-full h-full object-cover object-center"
+          src={securvioBanner} 
+          alt="Securvio security visualization"
+          className="w-full h-full object-cover object-top"
         />
       </div>
     </section>

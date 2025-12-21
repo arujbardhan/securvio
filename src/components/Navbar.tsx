@@ -22,7 +22,8 @@ const Navbar = () => {
             <img 
               src={securvioLogo} 
               alt="Securvio" 
-              className="h-12 md:h-16 w-auto"
+              className="h-12 md:h-16 w-auto rounded-lg"
+              style={{ backgroundColor: 'hsl(222, 47%, 6%)' }}
             />
           </a>
 
