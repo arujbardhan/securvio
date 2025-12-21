@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, User, ArrowRight, Sparkles } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { MessageSquare, X, Send, Bot, User, Sparkles } from "lucide-react";
+import DOMPurify from "dompurify";
 
 interface Message {
   id: string;
@@ -47,6 +48,62 @@ const getAIResponse = (question: string): string => {
   }
   
   return "Thanks for your question! As an AI security consultant, I can help with:\n\n• Security best practices and frameworks\n• DevSecOps implementation strategies\n• Compliance guidance (SOC 2, GDPR, HIPAA)\n• Vulnerability assessment approaches\n\nCould you provide more details about your specific security concern? Or explore our [Services](#services) to see how we can help!";
+};
+
+// Safe URL validator - only allows http, https, mailto, and anchor links
+const isValidUrl = (url: string): boolean => {
+  const trimmedUrl = url.trim().toLowerCase();
+  return (
+    trimmedUrl.startsWith('http://') ||
+    trimmedUrl.startsWith('https://') ||
+    trimmedUrl.startsWith('mailto:') ||
+    trimmedUrl.startsWith('#')
+  );
+};
+
+// Safe markdown-like formatting with sanitization
+const formatMessageContent = (content: string): string => {
+  // First, escape any HTML in the content to prevent injection
+  const escaped = content
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+  
+  // Apply safe formatting
+  const formatted = escaped
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => {
+      if (isValidUrl(url)) {
+        const sanitizedUrl = url.replace(/"/g, '&quot;');
+        return `<a href="${sanitizedUrl}" class="text-primary underline" rel="noopener noreferrer">${text}</a>`;
+      }
+      return text; // Return just the text if URL is invalid
+    })
+    .replace(/\n/g, '<br />');
+  
+  // Final sanitization with DOMPurify
+  return DOMPurify.sanitize(formatted, {
+    ALLOWED_TAGS: ['strong', 'a', 'br'],
+    ALLOWED_ATTR: ['href', 'class', 'rel'],
+  });
+};
+
+// Component for rendering message content safely
+const MessageContent = ({ content, role }: { content: string; role: "user" | "assistant" }) => {
+  const sanitizedHtml = useMemo(() => formatMessageContent(content), [content]);
+  
+  return (
+    <div
+      className={`max-w-[80%] p-3 rounded-xl text-sm leading-relaxed ${
+        role === "user"
+          ? "bg-primary text-primary-foreground rounded-br-sm"
+          : "bg-secondary text-foreground rounded-bl-sm"
+      }`}
+      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+    />
+  );
 };
 
 const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
@@ -158,18 +215,9 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
                     <Bot className="w-4 h-4" />
                   )}
                 </div>
-                <div
-                  className={`max-w-[80%] p-3 rounded-xl text-sm leading-relaxed ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground rounded-br-sm"
-                      : "bg-secondary text-foreground rounded-bl-sm"
-                  }`}
-                  dangerouslySetInnerHTML={{
-                    __html: message.content
-                      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary underline">$1</a>')
-                      .replace(/\n/g, "<br />"),
-                  }}
+                <MessageContent 
+                  content={message.content} 
+                  role={message.role}
                 />
               </div>
             ))}
