@@ -14,8 +14,8 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
       <div className="absolute inset-0 grid-pattern opacity-40" />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px]" />
       
-      {/* Floating Security Icons - Parallax */}
-      <div className="absolute top-1/3 left-10 lg:left-20 hidden md:block">
+      {/* Floating Security Icons - Parallax - adjusted positions to not cut off */}
+      <div className="absolute top-1/3 left-16 lg:left-24 hidden md:block">
         <ParallaxCard intensity={25}>
           <div className="glass-card p-4 animate-float">
             <Shield className="w-8 h-8 text-primary" />
@@ -23,7 +23,7 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
         </ParallaxCard>
       </div>
       
-      <div className="absolute top-1/2 right-10 lg:right-20 hidden md:block">
+      <div className="absolute top-1/2 right-16 lg:right-24 hidden md:block">
         <ParallaxCard intensity={30}>
           <div className="glass-card p-4 animate-float delay-200">
             <MessageSquare className="w-8 h-8 text-primary" />
@@ -31,20 +31,20 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
         </ParallaxCard>
       </div>
 
-      <div className="absolute bottom-1/4 left-1/4 hidden lg:block">
+      <div className="absolute bottom-1/3 left-1/4 hidden lg:block">
         <ParallaxCard intensity={20}>
           <div className="glass-card px-4 py-2 animate-float delay-400">
-            <span className="text-sm text-primary">AI-Powered</span>
+            <span className="text-sm text-primary font-medium">AI-Powered</span>
           </div>
         </ParallaxCard>
       </div>
       
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-primary/30 mb-8 animate-fade-up">
+          {/* Badge - fixed to not be cut off */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-8 animate-fade-up">
             <Shield className="w-4 h-4 text-primary" />
-            <span className="text-sm text-muted-foreground">AI-Powered Security Consulting</span>
+            <span className="text-sm text-foreground/80">AI-Powered Security Consulting</span>
           </div>
 
           {/* Headline */}
