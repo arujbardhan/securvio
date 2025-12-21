@@ -49,7 +49,6 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-6 animate-fade-up delay-100">
             Your <span className="text-gradient">AI Security Consultant</span>
-            <br />in the Browser
           </h1>
 
           {/* Subheadline */}
