@@ -21,15 +21,119 @@ const quickLinks = [
 ];
 
 const suggestedQuestions = [
-  "What are the best practices for API security?",
-  "How do I implement secure authentication?",
-  "What is DevSecOps?",
-  "How can I protect against SQL injection?",
+  "What is the CFAA?",
+  "Tell me about US cybersecurity laws",
+  "How do I protect against ransomware?",
+  "What is HIPAA compliance?",
 ];
+
+// Greeting patterns
+const greetingPatterns = [
+  "hello", "hi", "hey", "greetings", "good morning", "good afternoon", 
+  "good evening", "howdy", "what's up", "whats up", "sup", "yo", "hola"
+];
+
+const isGreeting = (text: string): boolean => {
+  const lower = text.toLowerCase().trim();
+  return greetingPatterns.some(greeting => 
+    lower === greeting || 
+    lower.startsWith(greeting + " ") || 
+    lower.startsWith(greeting + "!") ||
+    lower.startsWith(greeting + ",")
+  );
+};
+
+// Check if the question is related to cybersecurity
+const isCybersecurityRelated = (text: string): boolean => {
+  const lower = text.toLowerCase();
+  const cybersecurityKeywords = [
+    "security", "cyber", "hack", "vulnerability", "threat", "attack", "malware",
+    "ransomware", "phishing", "breach", "encryption", "firewall", "password",
+    "authentication", "authorization", "compliance", "gdpr", "hipaa", "soc",
+    "pci", "iso", "nist", "cfaa", "ecpa", "glba", "privacy", "data protection",
+    "penetration", "audit", "risk", "incident", "forensic", "intrusion",
+    "ddos", "dos", "sql injection", "xss", "csrf", "api", "oauth", "jwt",
+    "zero trust", "siem", "soc", "devsecops", "secure", "protect", "defense",
+    "law", "legal", "regulation", "legislation", "federal", "statute", "act",
+    "identity theft", "fraud", "wire fraud", "espionage", "trade secret",
+    "ftc", "sec", "fbi", "cisa", "network", "endpoint", "cloud security",
+    "vulnerability", "patch", "update", "backup", "disaster recovery",
+    "business continuity", "access control", "mfa", "2fa", "biometric",
+    "certificate", "ssl", "tls", "https", "vpn", "iam", "pam", "sso",
+    "securvio", "services", "contact", "help", "consultant", "assessment"
+  ];
+  return cybersecurityKeywords.some(keyword => lower.includes(keyword));
+};
 
 // Simulated AI responses for demo
 const getAIResponse = (question: string): string => {
   const lowerQuestion = question.toLowerCase();
+  
+  // Handle greetings
+  if (isGreeting(question)) {
+    const greetings = [
+      "Hello! 👋 Welcome to Securvio! I'm your AI security consultant, here to help with cybersecurity questions, compliance guidance, and security best practices. How can I assist you today?",
+      "Hi there! 👋 Great to see you! I'm Securvio, your cybersecurity assistant. I can help you with security best practices, US cybersecurity laws, DevSecOps, and more. What would you like to know?",
+      "Hey! 👋 Welcome! I'm here to help with all things cybersecurity - from compliance frameworks to threat prevention. What's on your mind?",
+      "Greetings! 👋 I'm Securvio, your dedicated security consultant. Whether you need help with CFAA compliance, security assessments, or DevSecOps integration, I'm here to help!"
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  }
+  
+  // Check if question is out of scope
+  if (!isCybersecurityRelated(question)) {
+    return "I appreciate your question, but that's outside my area of expertise. 🔒 I'm Securvio, an AI specialized in **cybersecurity consulting**.\n\nI can help you with:\n• Security best practices & frameworks\n• US Cybersecurity laws (CFAA, ECPA, GLBA, HIPAA)\n• DevSecOps implementation\n• Compliance guidance (SOC 2, GDPR, PCI-DSS)\n• Vulnerability assessments\n• Threat prevention strategies\n\nFeel free to ask me anything related to cybersecurity!";
+  }
+  
+  // US Cybersecurity Laws - CFAA
+  if (lowerQuestion.includes("cfaa") || lowerQuestion.includes("computer fraud") || lowerQuestion.includes("computer abuse")) {
+    return "The **Computer Fraud and Abuse Act (CFAA)**, 18 U.S.C. § 1030, is the primary federal statute for prosecuting cybercrime:\n\n**Key Prohibitions:**\n• **Unauthorized access** to computers with national security info (up to 10 years imprisonment)\n• **Exceeding authorized access** to obtain information (up to 1 year)\n• **Accessing government computers** without authorization (up to 1 year)\n• **Fraud through computer access** (up to 5 years)\n• **Intentional damage** to computers (up to 5-10 years)\n• **Password trafficking** (up to 1 year)\n• **Cyber-extortion** (up to 5 years)\n\n**Important:** After *Van Buren v. U.S.* (2020), CFAA no longer applies to insider threats.\n\nNeed help with CFAA compliance? Check our [Services](#services)!";
+  }
+  
+  // ECPA
+  if (lowerQuestion.includes("ecpa") || lowerQuestion.includes("electronic communications privacy") || lowerQuestion.includes("wiretap")) {
+    return "The **Electronic Communications Privacy Act (ECPA)** protects communications in storage and transit:\n\n**Title I - Wiretap Act:**\n• Prohibits intentional interception of electronic communications\n• Exceptions for law enforcement and service providers\n• Penalties: up to 5 years imprisonment\n\n**Title II - Stored Communications Act (SCA):**\n• Protects emails and stored data\n• Prohibits unauthorized access to electronic communication services\n• Penalties: up to 1-10 years for violations\n\n**Title III - Pen Register Act:**\n• Regulates collection of metadata\n• Requires court orders for pen registers/trap-and-trace devices\n\nThis law is crucial for email privacy and electronic surveillance compliance. [Contact us](mailto:a.bardhan2004@gmail.com) for guidance!";
+  }
+  
+  // GLBA
+  if (lowerQuestion.includes("glba") || lowerQuestion.includes("gramm-leach-bliley") || lowerQuestion.includes("gramm leach bliley")) {
+    return "The **Gramm-Leach-Bliley Act (GLBA)** applies to financial institutions:\n\n**Key Requirements:**\n• **Safeguards Rule**: Implement written security policies\n• **Privacy Rule**: Provide privacy notices to customers\n• **Pretexting Protection**: Prohibit obtaining customer info through false pretenses\n\n**Security Requirements:**\n• Designate security coordinator\n• Conduct risk assessments\n• Implement safeguards for customer data\n• Oversee service provider security\n• Evaluate and adjust security programs\n\n**Applies to:** Banks, securities firms, insurance companies, and other financial services.\n\nNeed GLBA compliance help? View our [Services](#services)!";
+  }
+  
+  // HIPAA
+  if (lowerQuestion.includes("hipaa") || lowerQuestion.includes("health insurance portability")) {
+    return "**HIPAA** (Health Insurance Portability and Accountability Act) protects healthcare data:\n\n**Security Rule Requirements:**\n• **Administrative Safeguards**: Security management, workforce training, incident procedures\n• **Physical Safeguards**: Facility access controls, workstation security\n• **Technical Safeguards**: Access controls, audit controls, encryption, integrity controls\n\n**Key Provisions:**\n• Protect Protected Health Information (PHI)\n• Breach notification within 60 days\n• Business Associate Agreements required\n• Penalties: $100-$50,000 per violation (up to $1.5M annually)\n\n**Covered Entities:** Healthcare providers, health plans, clearinghouses.\n\nNeed HIPAA compliance guidance? [Contact us](mailto:a.bardhan2004@gmail.com)!";
+  }
+  
+  // General US Cybersecurity Laws
+  if (lowerQuestion.includes("us law") || lowerQuestion.includes("federal law") || lowerQuestion.includes("cybersecurity law") || lowerQuestion.includes("legislation") || lowerQuestion.includes("regulation")) {
+    return "**Key US Cybersecurity Laws:**\n\n• **CFAA** (Computer Fraud and Abuse Act): Primary federal cybercrime statute\n• **ECPA** (Electronic Communications Privacy Act): Protects electronic communications\n• **GLBA** (Gramm-Leach-Bliley Act): Financial sector security requirements\n• **HIPAA**: Healthcare data protection\n• **SOX** (Sarbanes-Oxley): Public company IT controls\n• **FISMA**: Federal information security management\n• **CISA**: Cybersecurity Information Sharing Act\n\n**Regulatory Bodies:**\n• **FTC**: Enforces security under Section 5\n• **SEC**: Cybersecurity disclosure requirements\n• **CISA**: Federal cybersecurity coordination\n\n**State Laws:** Most states have data breach notification laws and computer crime statutes.\n\nAsk me about any specific law for details!";
+  }
+  
+  // Phishing
+  if (lowerQuestion.includes("phishing")) {
+    return "**Phishing** is a criminal offense under multiple US laws:\n\n**Legal Framework:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Intentional damage\n• **Wire Fraud** 18 U.S.C. § 1343: Up to 20 years imprisonment\n• **California Anti-Phishing Act of 2005**: State-level protections\n\n**Prevention Best Practices:**\n• Employee security awareness training\n• Email filtering and authentication (SPF, DKIM, DMARC)\n• Multi-factor authentication\n• Phishing simulation exercises\n• Incident response procedures\n\n**If You're Targeted:**\n• Report to IT security immediately\n• Don't click suspicious links\n• Report to FBI's IC3 (Internet Crime Complaint Center)\n\nNeed phishing protection assessment? Check our [Services](#services)!";
+  }
+  
+  // Ransomware
+  if (lowerQuestion.includes("ransomware") || lowerQuestion.includes("malware")) {
+    return "**Ransomware/Malware** attacks violate:\n\n**Legal Penalties:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Up to 10 years for intentional damage\n• **Wire Fraud**: Up to 20 years imprisonment\n• **Extortion statutes**: Additional federal charges\n\n**Protection Strategies:**\n• Regular, tested backups (3-2-1 rule)\n• Network segmentation\n• Endpoint detection and response (EDR)\n• Patch management program\n• Email security gateways\n• User awareness training\n\n**If Attacked:**\n• Isolate affected systems immediately\n• Contact law enforcement (FBI, CISA)\n• Don't pay ransom without legal counsel\n• Engage incident response team\n\n[Contact us](mailto:a.bardhan2004@gmail.com) for ransomware readiness assessment!";
+  }
+  
+  // Identity Theft
+  if (lowerQuestion.includes("identity theft") || lowerQuestion.includes("identity fraud")) {
+    return "**Identity Theft** is prosecuted under:\n\n**Federal Laws:**\n• **Identity Theft Penalty Enhancement Act** 18 U.S.C. § 1028: Primary statute\n• **CFAA**: When computers are used\n• **Wire Fraud**: 18 U.S.C. § 1343\n\n**Penalties:**\n• 2-year mandatory minimum for aggravated identity theft\n• Up to 15 years for basic identity theft\n• Up to 20 years if connected to other crimes\n\n**Prevention Measures:**\n• Strong access controls\n• Data minimization practices\n• Encryption of PII\n• Regular security audits\n• Employee background checks\n\nNeed identity theft protection assessment? View our [Services](#services)!";
+  }
+  
+  // DDoS/DoS
+  if (lowerQuestion.includes("ddos") || lowerQuestion.includes("denial of service") || lowerQuestion.includes("dos attack")) {
+    return "**DDoS/DoS Attacks** are prosecuted under:\n\n**Legal Framework:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Intentional damage\n• Penalty: Up to **10 years imprisonment**\n• State computer crime laws also apply\n\n**Protection Strategies:**\n• DDoS mitigation services (Cloudflare, AWS Shield)\n• Rate limiting and traffic analysis\n• Redundant infrastructure\n• Content Delivery Networks (CDNs)\n• Incident response planning\n\n**Response Steps:**\n• Activate DDoS mitigation\n• Document the attack\n• Report to law enforcement\n• Notify affected parties\n\nNeed DDoS protection assessment? Check our [Services](#services)!";
+  }
+  
+  // Penetration Testing
+  if (lowerQuestion.includes("penetration test") || lowerQuestion.includes("pentest") || lowerQuestion.includes("pen test")) {
+    return "**Penetration Testing** has important legal considerations:\n\n**⚠️ Without Authorization = Criminal:**\n• **CFAA** violations: § 1030(a)(1)-(5)\n• Up to 10 years imprisonment\n• Civil liability\n\n**Legal Penetration Testing Requires:**\n• Written authorization (Rules of Engagement)\n• Defined scope and boundaries\n• Get-out-of-jail letter\n• Liability insurance\n• Compliance with state laws\n\n**Best Practices:**\n• Clear contract terms\n• Document everything\n• Stay within scope\n• Secure communication channels\n• Detailed final reports\n\nNeed a professional penetration test? [Contact us](mailto:a.bardhan2004@gmail.com)!";
+  }
   
   if (lowerQuestion.includes("api security") || lowerQuestion.includes("api")) {
     return "Great question! Here are key API security best practices:\n\n• **Authentication**: Use OAuth 2.0 or JWT tokens\n• **Rate Limiting**: Prevent abuse with request limits\n• **Input Validation**: Sanitize all inputs\n• **HTTPS**: Always encrypt data in transit\n• **API Keys**: Rotate regularly and never expose in client code\n\nWant me to elaborate on any of these? You can also check our [Services](#services) for a comprehensive security assessment.";
@@ -47,7 +151,16 @@ const getAIResponse = (question: string): string => {
     return "To prevent SQL injection:\n\n• **Parameterized Queries**: Never concatenate user input\n• **ORM Usage**: Use frameworks like Prisma, Sequelize\n• **Input Validation**: Whitelist allowed characters\n• **Least Privilege**: DB accounts with minimal permissions\n• **WAF**: Web Application Firewall for additional protection\n\nNeed a security assessment? [Contact us](mailto:a.bardhan2004@gmail.com)!";
   }
   
-  return "Thanks for your question! As an AI security consultant, I can help with:\n\n• Security best practices and frameworks\n• DevSecOps implementation strategies\n• Compliance guidance (SOC 2, GDPR, HIPAA)\n• Vulnerability assessment approaches\n\nCould you provide more details about your specific security concern? Or explore our [Services](#services) to see how we can help!";
+  // Compliance frameworks
+  if (lowerQuestion.includes("soc 2") || lowerQuestion.includes("soc2")) {
+    return "**SOC 2 Compliance** focuses on five Trust Service Criteria:\n\n• **Security**: Protection against unauthorized access\n• **Availability**: System accessibility as agreed\n• **Processing Integrity**: Accurate and timely processing\n• **Confidentiality**: Protection of confidential information\n• **Privacy**: Personal information handling\n\n**Type I vs Type II:**\n• Type I: Point-in-time assessment\n• Type II: Over a period (usually 6-12 months)\n\nNeed SOC 2 readiness assessment? View our [Services](#services)!";
+  }
+  
+  if (lowerQuestion.includes("gdpr")) {
+    return "**GDPR** (General Data Protection Regulation) key requirements:\n\n• **Lawful Basis**: Consent, contract, legal obligation, etc.\n• **Data Subject Rights**: Access, erasure, portability\n• **Breach Notification**: 72 hours to supervisory authority\n• **Privacy by Design**: Built-in data protection\n• **DPO**: Data Protection Officer for certain organizations\n\n**Penalties:** Up to €20M or 4% of global annual revenue\n\nNeed GDPR compliance guidance? [Contact us](mailto:a.bardhan2004@gmail.com)!";
+  }
+  
+  return "Thanks for your question! As an AI security consultant, I can help with:\n\n• **US Cybersecurity Laws** (CFAA, ECPA, GLBA, HIPAA)\n• **Security best practices** and frameworks\n• **DevSecOps** implementation strategies\n• **Compliance guidance** (SOC 2, GDPR, PCI-DSS)\n• **Vulnerability assessment** approaches\n• **Threat prevention** strategies\n\nCould you provide more details about your specific security concern? Or explore our [Services](#services) to see how we can help!";
 };
 
 // Safe URL validator - only allows http, https, mailto, and anchor links
