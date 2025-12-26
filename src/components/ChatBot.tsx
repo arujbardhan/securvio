@@ -21,13 +21,13 @@ const quickLinks = [
 ];
 
 const suggestedQuestions = [
-  "What is the CFAA?",
-  "Tell me about US cybersecurity laws",
+  "What are the 2026 HIPAA updates?",
+  "Explain SOC 2 compliance",
+  "What is Zero Trust architecture?",
   "How do I protect against ransomware?",
-  "What is HIPAA compliance?",
 ];
 
-// Greeting patterns
+// Greeting patterns for natural conversation
 const greetingPatterns = [
   "hello", "hi", "hey", "greetings", "good morning", "good afternoon", 
   "good evening", "howdy", "what's up", "whats up", "sup", "yo", "hola"
@@ -43,14 +43,17 @@ const isGreeting = (text: string): boolean => {
   );
 };
 
-// Common typo corrections and synonyms mapping
+// Typo corrections and synonyms for fuzzy matching
 const typoCorrections: Record<string, string[]> = {
-  "hipaa": ["hippa", "hipa", "hipaa", "hippa", "hepa", "hpaa", "hippa"],
-  "cfaa": ["cfaa", "cfa", "cffa", "cfaaa", "cfaa"],
+  "hipaa": ["hippa", "hipa", "hipaa", "hepa", "hpaa", "hippa", "hippa compliance"],
+  "cfaa": ["cfaa", "cfa", "cffa", "cfaaa"],
   "ecpa": ["ecpa", "epa", "ecpaa", "eca"],
   "glba": ["glba", "glb", "glbaa", "gramm"],
   "gdpr": ["gdpr", "gdrp", "gdp", "gpr"],
-  "phishing": ["phishing", "phising", "fishing", "phising", "phissing"],
+  "nist": ["nist", "nist framework", "nist csf", "nst"],
+  "iso 27001": ["iso 27001", "iso27001", "iso-27001", "iso 27k", "iso27k"],
+  "soc 2": ["soc 2", "soc2", "soc-2", "sock 2", "soc two", "soc type 2"],
+  "phishing": ["phishing", "phising", "fishing", "phissing"],
   "ransomware": ["ransomware", "ransom", "ransomeware", "ransonware"],
   "malware": ["malware", "malwear", "malwere", "malaware"],
   "authentication": ["authentication", "auth", "authetication", "authentification"],
@@ -63,21 +66,21 @@ const typoCorrections: Record<string, string[]> = {
   "devsecops": ["devsecops", "dev sec ops", "devsecop", "dev-sec-ops"],
   "sql injection": ["sql injection", "sql injections", "sqli", "sql inject"],
   "ddos": ["ddos", "dos", "ddoss", "denial of service"],
-  "soc 2": ["soc 2", "soc2", "soc-2", "sock 2", "soc two"],
   "identity theft": ["identity theft", "id theft", "identy theft"],
   "cybersecurity": ["cybersecurity", "cyber security", "cyber-security", "cybersecuirty"],
   "security": ["security", "secutiry", "secuirty", "securty"],
+  "ai governance": ["ai governance", "ai gov", "artificial intelligence governance"],
+  "zero trust": ["zero trust", "zero-trust", "zerotrust", "0 trust"],
+  "phi": ["phi", "protected health information", "pii", "personal health"],
 };
 
-// Fuzzy match score using Levenshtein-like approach
+// Fuzzy match for typo tolerance
 const fuzzyMatch = (input: string, target: string): boolean => {
   const inputLower = input.toLowerCase();
   const targetLower = target.toLowerCase();
   
-  // Exact match
   if (inputLower.includes(targetLower)) return true;
   
-  // Check character similarity (simple fuzzy)
   const minLength = Math.min(inputLower.length, targetLower.length);
   if (minLength < 3) return inputLower === targetLower;
   
@@ -86,7 +89,6 @@ const fuzzyMatch = (input: string, target: string): boolean => {
     if (inputLower[i] === targetLower[i]) matches++;
   }
   
-  // 70% similarity threshold
   return matches / targetLower.length > 0.7;
 };
 
@@ -105,48 +107,48 @@ const normalizeText = (text: string): string => {
   return normalized;
 };
 
-// Check if the question is related to cybersecurity (with fuzzy matching)
-const isCybersecurityRelated = (text: string): boolean => {
+// Determine if question is within cybersecurity/compliance scope
+const isInScope = (text: string): boolean => {
   const normalized = normalizeText(text);
-  const cybersecurityKeywords = [
-    "security", "cyber", "hack", "vulnerability", "threat", "attack", "malware",
-    "ransomware", "phishing", "breach", "encryption", "firewall", "password",
-    "authentication", "authorization", "compliance", "gdpr", "hipaa", "soc",
-    "pci", "iso", "nist", "cfaa", "ecpa", "glba", "privacy", "data protection",
-    "penetration", "audit", "risk", "incident", "forensic", "intrusion",
-    "ddos", "dos", "sql injection", "xss", "csrf", "api", "oauth", "jwt",
-    "zero trust", "siem", "soc", "devsecops", "secure", "protect", "defense",
-    "law", "legal", "regulation", "legislation", "federal", "statute", "act",
-    "identity theft", "fraud", "wire fraud", "espionage", "trade secret",
-    "ftc", "sec", "fbi", "cisa", "network", "endpoint", "cloud security",
-    "vulnerability", "patch", "update", "backup", "disaster recovery",
-    "business continuity", "access control", "mfa", "2fa", "biometric",
-    "certificate", "ssl", "tls", "https", "vpn", "iam", "pam", "sso",
+  const scopeKeywords = [
+    // Compliance frameworks
+    "security", "cyber", "compliance", "gdpr", "hipaa", "soc", "soc 2", "nist", "iso",
+    "pci", "pci-dss", "ferpa", "ccpa", "cpra", "glba", "ecpa", "cfaa",
+    // Security concepts
+    "hack", "vulnerability", "threat", "attack", "malware", "ransomware", "phishing",
+    "breach", "encryption", "firewall", "password", "authentication", "authorization",
+    "penetration", "audit", "risk", "incident", "forensic", "intrusion", "ddos",
+    "sql injection", "xss", "csrf", "api", "oauth", "jwt", "zero trust", "siem",
+    // Healthcare/AI governance
+    "phi", "protected health", "ai governance", "ai security", "ai risk", "model governance",
+    "healthcare", "covered entity", "business associate", "baa",
+    // General security
+    "devsecops", "secure", "protect", "defense", "privacy", "data protection",
+    "access control", "mfa", "2fa", "biometric", "certificate", "ssl", "tls", "vpn",
+    "iam", "pam", "sso", "endpoint", "cloud security", "patch", "backup",
+    // Securvio context
     "securvio", "services", "contact", "help", "consultant", "assessment",
-    "tell me more", "explain", "what about", "how about", "can you"
+    "tell me more", "explain", "what about", "how about", "can you", "elaborate"
   ];
-  return cybersecurityKeywords.some(keyword => normalized.includes(keyword));
+  return scopeKeywords.some(keyword => normalized.includes(keyword));
 };
 
-// Extract topic from conversation history for context
+// Extract conversation context for continuity
 const extractConversationContext = (messages: Message[]): string[] => {
   const topics: string[] = [];
   const topicKeywords: Record<string, string[]> = {
-    "hipaa": ["hipaa", "health", "phi", "healthcare"],
-    "cfaa": ["cfaa", "computer fraud", "abuse act"],
-    "ecpa": ["ecpa", "electronic communications", "wiretap"],
-    "glba": ["glba", "gramm", "financial"],
-    "gdpr": ["gdpr", "european", "data protection regulation"],
-    "phishing": ["phishing", "email scam"],
+    "hipaa": ["hipaa", "health", "phi", "healthcare", "covered entity", "2026"],
+    "soc 2": ["soc 2", "soc2", "trust service", "type 1", "type 2"],
+    "gdpr": ["gdpr", "european", "data protection regulation", "dpo", "data subject"],
+    "nist": ["nist", "csf", "cybersecurity framework", "800-53"],
+    "iso 27001": ["iso 27001", "iso27001", "isms", "information security management"],
+    "ai governance": ["ai governance", "ai risk", "model", "algorithm", "bias"],
+    "zero trust": ["zero trust", "never trust", "verify"],
     "ransomware": ["ransomware", "ransom", "malware"],
-    "authentication": ["authentication", "auth", "login", "password"],
-    "devsecops": ["devsecops", "dev sec ops", "pipeline"],
-    "penetration": ["penetration", "pentest", "pen test"],
-    "sql injection": ["sql injection", "sqli", "injection"],
-    "ddos": ["ddos", "denial of service"],
-    "soc 2": ["soc 2", "soc2"],
-    "compliance": ["compliance", "compliant", "regulation"],
-    "api": ["api", "rest", "endpoint"],
+    "phishing": ["phishing", "email scam", "social engineering"],
+    "encryption": ["encryption", "encrypt", "cryptography", "aes"],
+    "authentication": ["authentication", "mfa", "login", "password"],
+    "compliance": ["compliance", "audit", "regulation", "framework"],
   };
   
   for (const message of messages) {
@@ -161,80 +163,98 @@ const extractConversationContext = (messages: Message[]): string[] => {
   return topics;
 };
 
-// Simulated AI responses for demo with conversation context
+// Detect user intent for dynamic response adjustment
+const detectIntent = (text: string): "education" | "implementation" | "risk" | "compliance" | "policy" | "general" => {
+  const lower = text.toLowerCase();
+  
+  if (lower.includes("how do i") || lower.includes("how to") || lower.includes("implement") || lower.includes("set up") || lower.includes("configure")) {
+    return "implementation";
+  }
+  if (lower.includes("risk") || lower.includes("threat") || lower.includes("vulnerable") || lower.includes("attack") || lower.includes("breach")) {
+    return "risk";
+  }
+  if (lower.includes("comply") || lower.includes("compliance") || lower.includes("audit") || lower.includes("requirement") || lower.includes("regulation")) {
+    return "compliance";
+  }
+  if (lower.includes("policy") || lower.includes("procedure") || lower.includes("governance") || lower.includes("framework")) {
+    return "policy";
+  }
+  if (lower.includes("what is") || lower.includes("explain") || lower.includes("tell me about") || lower.includes("define")) {
+    return "education";
+  }
+  
+  return "general";
+};
+
+// Main AI response generator with ChatGPT-like behavior
 const getAIResponse = (question: string, conversationHistory: Message[]): string => {
   const normalizedQuestion = normalizeText(question);
   const contextTopics = extractConversationContext(conversationHistory);
+  const intent = detectIntent(question);
   
-  // Handle greetings
+  // Handle greetings naturally
   if (isGreeting(question)) {
-    const greetings = [
-      "Hello! 👋 Welcome to Securvio! I'm your AI security consultant, here to help with cybersecurity questions, compliance guidance, and security best practices. How can I assist you today?",
-      "Hi there! 👋 Great to see you! I'm Securvio, your cybersecurity assistant. I can help you with security best practices, US cybersecurity laws, DevSecOps, and more. What would you like to know?",
-      "Hey! 👋 Welcome! I'm here to help with all things cybersecurity - from compliance frameworks to threat prevention. What's on your mind?",
-      "Greetings! 👋 I'm Securvio, your dedicated security consultant. Whether you need help with CFAA compliance, security assessments, or DevSecOps integration, I'm here to help!"
-    ];
-    return greetings[Math.floor(Math.random() * greetings.length)];
+    return "Hello. I'm Securvio AI, your cybersecurity and compliance assistant.\n\nI specialize in helping healthcare and regulated organizations understand and implement security frameworks including **HIPAA**, **SOC 2**, **GDPR**, **NIST**, and **ISO 27001**.\n\nHow can I assist you today?";
   }
   
-  // Handle follow-up questions with conversation context
-  const followUpPatterns = ["tell me more", "more about", "explain more", "what else", "anything else", "continue", "go on", "more details", "elaborate"];
+  // Handle follow-up questions with context
+  const followUpPatterns = ["tell me more", "more about", "explain more", "what else", "continue", "go on", "elaborate", "more details"];
   const isFollowUp = followUpPatterns.some(pattern => normalizedQuestion.includes(pattern));
   
   if (isFollowUp && contextTopics.length > 0) {
     const lastTopic = contextTopics[contextTopics.length - 1];
-    return getTopicResponse(lastTopic, true);
+    return getTopicResponse(lastTopic, true, intent);
   }
   
-  // Handle "what about X" patterns with context
+  // Handle "what about X" patterns with context awareness
   if (normalizedQuestion.includes("what about") || normalizedQuestion.includes("how about")) {
     const topicMatch = detectTopic(normalizedQuestion);
     if (topicMatch) {
-      return getTopicResponse(topicMatch, false);
+      return getTopicResponse(topicMatch, false, intent);
     }
-    // If asking "what about" without a clear topic, use conversation context
     if (contextTopics.length > 0) {
-      return `Based on our conversation about **${contextTopics[contextTopics.length - 1].toUpperCase()}**, would you like me to cover:\n\n• Implementation best practices\n• Common pitfalls to avoid\n• Compliance requirements\n• Real-world examples\n\nJust let me know which aspect interests you most!`;
+      return `Building on our discussion of **${contextTopics[contextTopics.length - 1].toUpperCase()}**, I can cover:\n\n- Implementation best practices\n- Common compliance gaps\n- Risk mitigation strategies\n- Documentation requirements\n\nWhich aspect would be most helpful for your situation?`;
     }
   }
   
-  // Check if question is out of scope
-  if (!isCybersecurityRelated(question)) {
-    return "I appreciate your question, but that's outside my area of expertise. 🔒 I'm Securvio, an AI specialized in **cybersecurity consulting**.\n\nI can help you with:\n• Security best practices & frameworks\n• US Cybersecurity laws (CFAA, ECPA, GLBA, HIPAA)\n• DevSecOps implementation\n• Compliance guidance (SOC 2, GDPR, PCI-DSS)\n• Vulnerability assessments\n• Threat prevention strategies\n\nFeel free to ask me anything related to cybersecurity!";
+  // Check if out of scope
+  if (!isInScope(question)) {
+    return "I appreciate your question, but that falls outside my area of expertise.\n\nAs Securvio AI, I focus specifically on **cybersecurity and compliance** for healthcare and regulated organizations. I can help with:\n\n- **HIPAA** compliance (including 2026 updates)\n- **SOC 2** and **ISO 27001** frameworks\n- **GDPR** and privacy regulations\n- **NIST** cybersecurity framework\n- **AI governance** and risk management\n- Security architecture and best practices\n\nFeel free to ask about any of these topics.";
   }
   
-  // Detect topic and return appropriate response
+  // Detect topic and generate response
   const topic = detectTopic(normalizedQuestion);
   if (topic) {
-    return getTopicResponse(topic, false);
+    return getTopicResponse(topic, false, intent);
   }
   
-  return "Thanks for your question! As an AI security consultant, I can help with:\n\n• **US Cybersecurity Laws** (CFAA, ECPA, GLBA, HIPAA)\n• **Security best practices** and frameworks\n• **DevSecOps** implementation strategies\n• **Compliance guidance** (SOC 2, GDPR, PCI-DSS)\n• **Vulnerability assessment** approaches\n• **Threat prevention** strategies\n\nCould you provide more details about your specific security concern? Or explore our [Services](#services) to see how we can help!";
+  // Default helpful response
+  return "I can help you with that. To provide the most relevant guidance, could you share a bit more context?\n\nFor example:\n- What type of organization are you (healthcare, financial, tech)?\n- Are you preparing for a specific audit or certification?\n- Is this related to a particular compliance framework?\n\nThis will help me tailor my response to your specific situation.";
 };
 
-// Detect the main topic from normalized text
+// Topic detection with comprehensive pattern matching
 const detectTopic = (text: string): string | null => {
   const topicPatterns: [string, string[]][] = [
-    ["cfaa", ["cfaa", "computer fraud", "computer abuse", "abuse act"]],
-    ["ecpa", ["ecpa", "electronic communications privacy", "wiretap", "stored communications"]],
-    ["glba", ["glba", "gramm-leach-bliley", "gramm leach bliley", "financial privacy"]],
-    ["hipaa", ["hipaa", "health insurance portability", "healthcare compliance", "phi", "protected health"]],
-    ["us_laws", ["us law", "federal law", "cybersecurity law", "legislation", "regulation", "cyber law"]],
-    ["phishing", ["phishing", "phish", "email scam", "spear phishing"]],
-    ["ransomware", ["ransomware", "ransom", "malware", "virus", "trojan"]],
-    ["identity_theft", ["identity theft", "identity fraud", "id theft", "stolen identity"]],
-    ["ddos", ["ddos", "denial of service", "dos attack", "distributed denial"]],
-    ["penetration", ["penetration test", "pentest", "pen test", "ethical hacking"]],
-    ["api", ["api security", "api", "rest api", "api protection"]],
-    ["authentication", ["authentication", "auth", "login security", "mfa", "2fa", "multi-factor"]],
-    ["devsecops", ["devsecops", "dev sec ops", "security pipeline", "cicd security"]],
-    ["sql_injection", ["sql injection", "sqli", "injection attack", "database injection"]],
-    ["soc2", ["soc 2", "soc2", "soc-2", "service organization"]],
-    ["gdpr", ["gdpr", "general data protection", "european privacy"]],
-    ["encryption", ["encryption", "encrypt", "cryptography", "aes", "rsa"]],
-    ["zero_trust", ["zero trust", "zero-trust", "never trust"]],
-    ["xss", ["xss", "cross site scripting", "cross-site scripting"]],
-    ["csrf", ["csrf", "cross site request", "request forgery"]],
+    ["hipaa_2026", ["2026", "hipaa update", "hipaa change", "new hipaa", "hipaa rule"]],
+    ["hipaa", ["hipaa", "health insurance portability", "healthcare compliance", "phi", "protected health", "covered entity", "business associate"]],
+    ["soc2", ["soc 2", "soc2", "soc-2", "service organization", "trust service", "type 1", "type 2", "type i", "type ii"]],
+    ["gdpr", ["gdpr", "general data protection", "european privacy", "data subject", "dpo", "right to be forgotten"]],
+    ["nist", ["nist", "cybersecurity framework", "csf", "800-53", "800-171", "nist sp"]],
+    ["iso27001", ["iso 27001", "iso27001", "isms", "information security management", "iso 27k"]],
+    ["ai_governance", ["ai governance", "ai risk", "ai security", "model governance", "algorithm", "machine learning security", "llm security"]],
+    ["zero_trust", ["zero trust", "zero-trust", "never trust", "always verify"]],
+    ["ransomware", ["ransomware", "ransom", "malware", "virus", "trojan", "cryptolocker"]],
+    ["phishing", ["phishing", "phish", "email scam", "spear phishing", "social engineering", "pretexting"]],
+    ["encryption", ["encryption", "encrypt", "cryptography", "aes", "rsa", "tls", "ssl"]],
+    ["authentication", ["authentication", "auth", "mfa", "2fa", "multi-factor", "password", "passwordless", "biometric"]],
+    ["penetration", ["penetration test", "pentest", "pen test", "ethical hacking", "red team"]],
+    ["devsecops", ["devsecops", "dev sec ops", "security pipeline", "cicd security", "shift left"]],
+    ["access_control", ["access control", "rbac", "abac", "least privilege", "iam", "pam"]],
+    ["incident_response", ["incident response", "breach", "incident", "forensic", "containment"]],
+    ["risk_assessment", ["risk assessment", "risk management", "threat model", "vulnerability assessment"]],
+    ["vendor_management", ["vendor", "third party", "supply chain", "vendor risk", "third-party risk"]],
+    ["data_protection", ["data protection", "data privacy", "data security", "data loss", "dlp"]],
+    ["cloud_security", ["cloud security", "aws security", "azure security", "gcp security", "cloud compliance"]],
   ];
   
   for (const [topic, patterns] of topicPatterns) {
@@ -246,88 +266,88 @@ const detectTopic = (text: string): string | null => {
   return null;
 };
 
-// Get response for a specific topic
-const getTopicResponse = (topic: string, isFollowUp: boolean): string => {
+// Generate comprehensive responses based on topic and intent
+const getTopicResponse = (topic: string, isFollowUp: boolean, intent: string): string => {
   const responses: Record<string, { main: string; followUp: string }> = {
-    cfaa: {
-      main: "The **Computer Fraud and Abuse Act (CFAA)**, 18 U.S.C. § 1030, is the primary federal statute for prosecuting cybercrime:\n\n**Key Prohibitions:**\n• **Unauthorized access** to computers with national security info (up to 10 years imprisonment)\n• **Exceeding authorized access** to obtain information (up to 1 year)\n• **Accessing government computers** without authorization (up to 1 year)\n• **Fraud through computer access** (up to 5 years)\n• **Intentional damage** to computers (up to 5-10 years)\n• **Password trafficking** (up to 1 year)\n• **Cyber-extortion** (up to 5 years)\n\n**Important:** After *Van Buren v. U.S.* (2020), CFAA no longer applies to insider threats.\n\nNeed help with CFAA compliance? Check our [Services](#services)!",
-      followUp: "**More on CFAA:**\n\n**Civil Remedies:**\n• Private parties can sue for damages\n• Injunctive relief available\n• Attorney fees may be recovered\n\n**Key Cases:**\n• *Van Buren v. U.S.* (2020) - Narrowed \"exceeds authorized access\"\n• *hiQ Labs v. LinkedIn* - Public data scraping\n\n**Compliance Tips:**\n• Clear access policies for employees\n• Written authorization for testing\n• Regular access reviews\n\nWant details on any specific aspect?"
-    },
-    ecpa: {
-      main: "The **Electronic Communications Privacy Act (ECPA)** protects communications in storage and transit:\n\n**Title I - Wiretap Act:**\n• Prohibits intentional interception of electronic communications\n• Exceptions for law enforcement and service providers\n• Penalties: up to 5 years imprisonment\n\n**Title II - Stored Communications Act (SCA):**\n• Protects emails and stored data\n• Prohibits unauthorized access to electronic communication services\n• Penalties: up to 1-10 years for violations\n\n**Title III - Pen Register Act:**\n• Regulates collection of metadata\n• Requires court orders for pen registers/trap-and-trace devices\n\nThis law is crucial for email privacy and electronic surveillance compliance. [Contact us](mailto:a.bardhan2004@gmail.com) for guidance!",
-      followUp: "**More on ECPA:**\n\n**Employer Considerations:**\n• May monitor company systems with proper notice\n• Employee consent requirements vary by state\n• Document monitoring policies clearly\n\n**Service Provider Exceptions:**\n• Can access communications for system protection\n• Must comply with valid legal requests\n\n**Recent Developments:**\n• Cloud storage implications\n• International data requests\n\nNeed more details on a specific aspect?"
-    },
-    glba: {
-      main: "The **Gramm-Leach-Bliley Act (GLBA)** applies to financial institutions:\n\n**Key Requirements:**\n• **Safeguards Rule**: Implement written security policies\n• **Privacy Rule**: Provide privacy notices to customers\n• **Pretexting Protection**: Prohibit obtaining customer info through false pretenses\n\n**Security Requirements:**\n• Designate security coordinator\n• Conduct risk assessments\n• Implement safeguards for customer data\n• Oversee service provider security\n• Evaluate and adjust security programs\n\n**Applies to:** Banks, securities firms, insurance companies, and other financial services.\n\nNeed GLBA compliance help? View our [Services](#services)!",
-      followUp: "**More on GLBA Compliance:**\n\n**Safeguards Rule Updates (2023):**\n• Periodic risk assessments required\n• Multi-factor authentication mandated\n• Encryption of customer data\n• Change management procedures\n\n**Privacy Notice Requirements:**\n• Initial and annual notices\n• Opt-out rights for information sharing\n• Clear, conspicuous format\n\nWant help with implementation?"
+    hipaa_2026: {
+      main: "**2026 HIPAA Security Rule Updates**\n\nThe Department of Health and Human Services has proposed significant updates to the HIPAA Security Rule, expected to take effect in 2026:\n\n**Key Changes:**\n\n1. **Mandatory Encryption** - Encryption of ePHI at rest and in transit will become required, not addressable\n\n2. **Enhanced Access Controls** - Multi-factor authentication will be mandatory for all systems containing ePHI\n\n3. **Asset Inventory** - Organizations must maintain comprehensive technology asset inventories\n\n4. **Network Segmentation** - Required segmentation between systems containing ePHI and other networks\n\n5. **Annual Risk Assessments** - Formal risk assessments required annually (previously \"periodic\")\n\n6. **Incident Response Testing** - Annual testing of incident response and contingency plans\n\n**Practical Takeaway:** Organizations should begin gap assessments now, as these changes will require significant infrastructure and policy updates. The compliance timeline is expected to be 180 days after final rule publication.\n\n*Note: These rules are still in proposed form. I recommend monitoring HHS announcements for final requirements.*",
+      followUp: "**Additional 2026 HIPAA Details:**\n\n**Documentation Requirements:**\n- Written policies for all security controls\n- Evidence of annual reviews\n- Audit logs retained for at least 6 years\n\n**Vendor Obligations:**\n- Business Associate Agreements must be updated\n- Vendors must demonstrate equivalent security controls\n- Annual compliance attestations may be required\n\n**Preparation Steps:**\n1. Conduct current-state gap analysis\n2. Inventory all systems with ePHI access\n3. Evaluate encryption capabilities\n4. Review MFA deployment status\n5. Budget for necessary upgrades\n\nWould you like guidance on any specific preparation area?"
     },
     hipaa: {
-      main: "**HIPAA** (Health Insurance Portability and Accountability Act) protects healthcare data:\n\n**Security Rule Requirements:**\n• **Administrative Safeguards**: Security management, workforce training, incident procedures\n• **Physical Safeguards**: Facility access controls, workstation security\n• **Technical Safeguards**: Access controls, audit controls, encryption, integrity controls\n\n**Key Provisions:**\n• Protect Protected Health Information (PHI)\n• Breach notification within 60 days\n• Business Associate Agreements required\n• Penalties: $100-$50,000 per violation (up to $1.5M annually)\n\n**Covered Entities:** Healthcare providers, health plans, clearinghouses.\n\nNeed HIPAA compliance guidance? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on HIPAA:**\n\n**Common Violations:**\n• Unauthorized PHI access by employees\n• Lost/stolen unencrypted devices\n• Improper disposal of records\n• Lack of risk assessments\n\n**Breach Response:**\n• Individual notification within 60 days\n• HHS notification (varies by size)\n• Media notification if 500+ affected\n\n**Tips for Compliance:**\n• Annual security training\n• Encrypted communications\n• Regular access audits\n\nNeed help with any specific area?"
-    },
-    us_laws: {
-      main: "**Key US Cybersecurity Laws:**\n\n• **CFAA** (Computer Fraud and Abuse Act): Primary federal cybercrime statute\n• **ECPA** (Electronic Communications Privacy Act): Protects electronic communications\n• **GLBA** (Gramm-Leach-Bliley Act): Financial sector security requirements\n• **HIPAA**: Healthcare data protection\n• **SOX** (Sarbanes-Oxley): Public company IT controls\n• **FISMA**: Federal information security management\n• **CISA**: Cybersecurity Information Sharing Act\n\n**Regulatory Bodies:**\n• **FTC**: Enforces security under Section 5\n• **SEC**: Cybersecurity disclosure requirements\n• **CISA**: Federal cybersecurity coordination\n\n**State Laws:** Most states have data breach notification laws and computer crime statutes.\n\nAsk me about any specific law for details!",
-      followUp: "**More on US Cybersecurity Framework:**\n\n**Sector-Specific Laws:**\n• **FERPA**: Educational records\n• **COPPA**: Children's online privacy\n• **FCRA**: Consumer credit information\n• **CCPA/CPRA**: California privacy rights\n\n**Enforcement Trends:**\n• Increased FTC actions\n• SEC cyber disclosure rules\n• State AG enforcement rising\n\nWhich area would you like to explore?"
-    },
-    phishing: {
-      main: "**Phishing** is a criminal offense under multiple US laws:\n\n**Legal Framework:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Intentional damage\n• **Wire Fraud** 18 U.S.C. § 1343: Up to 20 years imprisonment\n• **California Anti-Phishing Act of 2005**: State-level protections\n\n**Prevention Best Practices:**\n• Employee security awareness training\n• Email filtering and authentication (SPF, DKIM, DMARC)\n• Multi-factor authentication\n• Phishing simulation exercises\n• Incident response procedures\n\n**If You're Targeted:**\n• Report to IT security immediately\n• Don't click suspicious links\n• Report to FBI's IC3 (Internet Crime Complaint Center)\n\nNeed phishing protection assessment? Check our [Services](#services)!",
-      followUp: "**More on Phishing Prevention:**\n\n**Technical Controls:**\n• SPF, DKIM, DMARC email authentication\n• URL rewriting and sandboxing\n• Browser isolation\n• DNS filtering\n\n**Human Controls:**\n• Regular training and testing\n• Clear reporting procedures\n• Reward reporting culture\n\n**Emerging Threats:**\n• AI-generated phishing\n• Voice phishing (vishing)\n• SMS phishing (smishing)\n\nWant more on any of these?"
-    },
-    ransomware: {
-      main: "**Ransomware/Malware** attacks violate:\n\n**Legal Penalties:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Up to 10 years for intentional damage\n• **Wire Fraud**: Up to 20 years imprisonment\n• **Extortion statutes**: Additional federal charges\n\n**Protection Strategies:**\n• Regular, tested backups (3-2-1 rule)\n• Network segmentation\n• Endpoint detection and response (EDR)\n• Patch management program\n• Email security gateways\n• User awareness training\n\n**If Attacked:**\n• Isolate affected systems immediately\n• Contact law enforcement (FBI, CISA)\n• Don't pay ransom without legal counsel\n• Engage incident response team\n\n[Contact us](mailto:a.bardhan2004@gmail.com) for ransomware readiness assessment!",
-      followUp: "**More on Ransomware Defense:**\n\n**3-2-1 Backup Rule:**\n• 3 copies of data\n• 2 different media types\n• 1 offsite (air-gapped preferred)\n\n**Incident Response:**\n• Isolate, don't power off\n• Preserve evidence\n• Legal/insurance notification\n• Recovery from clean backups\n\n**Ransom Payment Considerations:**\n• OFAC sanctions risk\n• No guarantee of decryption\n• May fund further attacks\n\nNeed a ransomware tabletop exercise?"
-    },
-    identity_theft: {
-      main: "**Identity Theft** is prosecuted under:\n\n**Federal Laws:**\n• **Identity Theft Penalty Enhancement Act** 18 U.S.C. § 1028: Primary statute\n• **CFAA**: When computers are used\n• **Wire Fraud**: 18 U.S.C. § 1343\n\n**Penalties:**\n• 2-year mandatory minimum for aggravated identity theft\n• Up to 15 years for basic identity theft\n• Up to 20 years if connected to other crimes\n\n**Prevention Measures:**\n• Strong access controls\n• Data minimization practices\n• Encryption of PII\n• Regular security audits\n• Employee background checks\n\nNeed identity theft protection assessment? View our [Services](#services)!",
-      followUp: "**More on Identity Protection:**\n\n**Organizational Controls:**\n• Limit PII collection\n• Secure disposal procedures\n• Vendor due diligence\n• Access logging and monitoring\n\n**If Breach Occurs:**\n• Notify affected individuals\n• Offer credit monitoring\n• File with FTC/state AG\n• Document remediation\n\nWant more details on any area?"
-    },
-    ddos: {
-      main: "**DDoS/DoS Attacks** are prosecuted under:\n\n**Legal Framework:**\n• **CFAA** 18 U.S.C. § 1030(a)(5)(A): Intentional damage\n• Penalty: Up to **10 years imprisonment**\n• State computer crime laws also apply\n\n**Protection Strategies:**\n• DDoS mitigation services (Cloudflare, AWS Shield)\n• Rate limiting and traffic analysis\n• Redundant infrastructure\n• Content Delivery Networks (CDNs)\n• Incident response planning\n\n**Response Steps:**\n• Activate DDoS mitigation\n• Document the attack\n• Report to law enforcement\n• Notify affected parties\n\nNeed DDoS protection assessment? Check our [Services](#services)!",
-      followUp: "**More on DDoS Defense:**\n\n**Attack Types:**\n• Volumetric (bandwidth exhaustion)\n• Protocol (connection table)\n• Application layer (HTTP floods)\n\n**Mitigation Architecture:**\n• Edge protection\n• Anycast routing\n• Traffic scrubbing centers\n• Auto-scaling\n\n**During an Attack:**\n• Don't engage attackers\n• Preserve logs\n• Consider null routing as last resort\n\nNeed help with DDoS planning?"
-    },
-    penetration: {
-      main: "**Penetration Testing** has important legal considerations:\n\n**⚠️ Without Authorization = Criminal:**\n• **CFAA** violations: § 1030(a)(1)-(5)\n• Up to 10 years imprisonment\n• Civil liability\n\n**Legal Penetration Testing Requires:**\n• Written authorization (Rules of Engagement)\n• Defined scope and boundaries\n• Get-out-of-jail letter\n• Liability insurance\n• Compliance with state laws\n\n**Best Practices:**\n• Clear contract terms\n• Document everything\n• Stay within scope\n• Secure communication channels\n• Detailed final reports\n\nNeed a professional penetration test? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on Pen Testing:**\n\n**Types of Tests:**\n• Black box (no prior knowledge)\n• White box (full access)\n• Gray box (partial info)\n\n**Methodologies:**\n• OWASP Testing Guide\n• PTES (Penetration Testing Execution Standard)\n• NIST SP 800-115\n\n**Post-Test:**\n• Remediation guidance\n• Retest validation\n• Executive summary\n\nWant details on our pen testing services?"
-    },
-    api: {
-      main: "Great question! Here are key API security best practices:\n\n• **Authentication**: Use OAuth 2.0 or JWT tokens\n• **Rate Limiting**: Prevent abuse with request limits\n• **Input Validation**: Sanitize all inputs\n• **HTTPS**: Always encrypt data in transit\n• **API Keys**: Rotate regularly and never expose in client code\n\nWant me to elaborate on any of these? You can also check our [Services](#services) for a comprehensive security assessment.",
-      followUp: "**More on API Security:**\n\n**OWASP API Top 10:**\n• Broken Object Level Authorization\n• Broken Authentication\n• Excessive Data Exposure\n• Lack of Rate Limiting\n• Broken Function Level Authorization\n\n**Best Practices:**\n• API gateway implementation\n• Request signing\n• Schema validation\n• API versioning\n• Security testing in CI/CD\n\nNeed an API security assessment?"
-    },
-    authentication: {
-      main: "For secure authentication, I recommend:\n\n• **Multi-Factor Authentication (MFA)**: Add a second layer beyond passwords\n• **Password Policies**: Enforce strong passwords, use bcrypt for hashing\n• **Session Management**: Secure cookies, short expiration times\n• **OAuth 2.0/OIDC**: For third-party authentication\n\nOur [DevSecOps Integration](#devsecops) can help automate security checks in your auth flow.",
-      followUp: "**More on Authentication:**\n\n**MFA Options:**\n• TOTP apps (Google Authenticator)\n• Hardware keys (YubiKey)\n• Push notifications\n• Biometrics\n\n**Password Storage:**\n• bcrypt, scrypt, or Argon2\n• Never store plaintext\n• Salt each password uniquely\n\n**Session Security:**\n• HttpOnly, Secure flags\n• SameSite attribute\n• Regular rotation\n\nNeed implementation help?"
-    },
-    devsecops: {
-      main: "DevSecOps integrates security into every phase of development:\n\n• **Shift Left**: Catch vulnerabilities early in the SDLC\n• **Automation**: Security scans in CI/CD pipelines\n• **Continuous Monitoring**: Real-time threat detection\n• **Collaboration**: Security is everyone's responsibility\n\nCheck out our [DevSecOps section](#devsecops) to learn how we integrate security into your workflow!",
-      followUp: "**More on DevSecOps:**\n\n**Pipeline Security:**\n• SAST (Static Analysis)\n• DAST (Dynamic Analysis)\n• SCA (Software Composition)\n• Container scanning\n• IaC security\n\n**Culture:**\n• Security champions program\n• Blameless post-mortems\n• Security training for devs\n\n**Metrics:**\n• Mean time to remediate\n• Vulnerability escape rate\n• Security debt tracking\n\nWant help implementing DevSecOps?"
-    },
-    sql_injection: {
-      main: "To prevent SQL injection:\n\n• **Parameterized Queries**: Never concatenate user input\n• **ORM Usage**: Use frameworks like Prisma, Sequelize\n• **Input Validation**: Whitelist allowed characters\n• **Least Privilege**: DB accounts with minimal permissions\n• **WAF**: Web Application Firewall for additional protection\n\nNeed a security assessment? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on SQL Injection Prevention:**\n\n**Detection:**\n• SAST tools in CI/CD\n• DAST scanning\n• Code review checklists\n• WAF logging and alerts\n\n**If Exploited:**\n• Isolate database\n• Check for data exfiltration\n• Review all queries\n• Forensic investigation\n\n**Testing:**\n• SQLMap for authorized testing\n• Burp Suite\n• OWASP ZAP\n\nNeed more technical details?"
+      main: "**HIPAA Compliance Overview**\n\nHIPAA (Health Insurance Portability and Accountability Act) establishes national standards for protecting sensitive patient health information.\n\n**Core Requirements:**\n\n**Privacy Rule:**\n- Limits use and disclosure of Protected Health Information (PHI)\n- Requires minimum necessary standard\n- Grants patients access rights to their records\n\n**Security Rule:**\n- Administrative safeguards (security management, training, access management)\n- Physical safeguards (facility access, workstation security)\n- Technical safeguards (access controls, audit logs, encryption)\n\n**Breach Notification Rule:**\n- Individual notification within 60 days\n- HHS notification (timing varies by breach size)\n- Media notification if 500+ individuals affected\n\n**Who Must Comply:**\n- Covered Entities (providers, health plans, clearinghouses)\n- Business Associates (vendors with PHI access)\n\n**Practical Takeaway:** Start with a thorough risk assessment to identify gaps, then prioritize controls based on risk level and available resources.",
+      followUp: "**Common HIPAA Compliance Gaps:**\n\n1. **Incomplete Risk Assessments** - Many organizations skip annual reviews or lack documentation\n\n2. **Insufficient Access Controls** - Users with more access than their role requires\n\n3. **Missing BAAs** - Business Associate Agreements not in place for all vendors\n\n4. **Inadequate Training** - Security awareness training not conducted annually\n\n5. **Weak Audit Logging** - Access logs not reviewed or retained properly\n\n**Penalty Tiers (per violation):**\n- Tier 1: $100-$50,000 (lack of knowledge)\n- Tier 2: $1,000-$50,000 (reasonable cause)\n- Tier 3: $10,000-$50,000 (willful neglect, corrected)\n- Tier 4: $50,000 (willful neglect, not corrected)\n\nAnnual cap: $1.5 million per category\n\nWhich aspect would you like to explore further?"
     },
     soc2: {
-      main: "**SOC 2 Compliance** focuses on five Trust Service Criteria:\n\n• **Security**: Protection against unauthorized access\n• **Availability**: System accessibility as agreed\n• **Processing Integrity**: Accurate and timely processing\n• **Confidentiality**: Protection of confidential information\n• **Privacy**: Personal information handling\n\n**Type I vs Type II:**\n• Type I: Point-in-time assessment\n• Type II: Over a period (usually 6-12 months)\n\nNeed SOC 2 readiness assessment? View our [Services](#services)!",
-      followUp: "**More on SOC 2:**\n\n**Common Controls:**\n• Access management\n• Change management\n• Risk assessment\n• Incident response\n• Vendor management\n\n**Audit Process:**\n• Readiness assessment\n• Gap remediation\n• Control implementation\n• Auditor engagement\n• Continuous monitoring\n\n**Cost Factors:**\n• Organization size\n• Scope of systems\n• Current maturity\n\nNeed help with SOC 2 preparation?"
+      main: "**SOC 2 Compliance Overview**\n\nSOC 2 (Service Organization Control 2) is an auditing framework developed by the AICPA, widely used by technology and SaaS companies to demonstrate security practices.\n\n**Trust Service Criteria:**\n\n1. **Security** (required) - Protection against unauthorized access\n2. **Availability** - System accessibility as agreed in contracts\n3. **Processing Integrity** - Accurate, complete, timely processing\n4. **Confidentiality** - Protection of confidential information\n5. **Privacy** - Personal information handling practices\n\n**Report Types:**\n\n- **Type I** - Point-in-time assessment of control design\n- **Type II** - Assessment of control effectiveness over 3-12 months\n\n**Common Controls:**\n- Access management and authentication\n- Change management procedures\n- Incident response processes\n- Vendor management\n- Data backup and recovery\n\n**Practical Takeaway:** Most customers and prospects require Type II reports. Plan for a 3-6 month observation period after implementing controls before your audit.",
+      followUp: "**SOC 2 Implementation Roadmap:**\n\n**Phase 1: Readiness (4-8 weeks)**\n- Define scope and criteria\n- Gap assessment against trust services\n- Remediation planning\n\n**Phase 2: Implementation (8-16 weeks)**\n- Deploy required controls\n- Document policies and procedures\n- Implement monitoring and logging\n\n**Phase 3: Observation (3-12 months)**\n- Operate controls consistently\n- Collect evidence\n- Conduct internal reviews\n\n**Phase 4: Audit (4-6 weeks)**\n- Auditor testing\n- Evidence collection\n- Report generation\n\n**Estimated Timeline:** 6-12 months for first Type II report\n\n**Cost Factors:**\n- Organization size and complexity\n- Number of trust criteria included\n- Current security maturity\n- Auditor selection\n\nWould you like details on any specific phase?"
     },
     gdpr: {
-      main: "**GDPR** (General Data Protection Regulation) key requirements:\n\n• **Lawful Basis**: Consent, contract, legal obligation, etc.\n• **Data Subject Rights**: Access, erasure, portability\n• **Breach Notification**: 72 hours to supervisory authority\n• **Privacy by Design**: Built-in data protection\n• **DPO**: Data Protection Officer for certain organizations\n\n**Penalties:** Up to €20M or 4% of global annual revenue\n\nNeed GDPR compliance guidance? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on GDPR:**\n\n**Data Subject Rights:**\n• Right to access\n• Right to rectification\n• Right to erasure\n• Right to data portability\n• Right to object\n\n**International Transfers:**\n• SCCs (Standard Contractual Clauses)\n• Adequacy decisions\n• Binding Corporate Rules\n\n**Documentation:**\n• Records of processing\n• DPIA for high-risk\n• Consent records\n\nNeed help with any specific requirement?"
+      main: "**GDPR Compliance Overview**\n\nThe General Data Protection Regulation is the EU's comprehensive data privacy law, applicable to any organization processing EU residents' personal data.\n\n**Key Principles:**\n\n1. **Lawfulness** - Valid legal basis required for processing\n2. **Purpose Limitation** - Data used only for stated purposes\n3. **Data Minimization** - Collect only what's necessary\n4. **Accuracy** - Keep data current and correct\n5. **Storage Limitation** - Retain only as long as needed\n6. **Integrity and Confidentiality** - Appropriate security measures\n7. **Accountability** - Demonstrate compliance\n\n**Data Subject Rights:**\n- Right to access\n- Right to rectification\n- Right to erasure (\"right to be forgotten\")\n- Right to data portability\n- Right to object\n\n**Breach Notification:**\n- Supervisory authority: 72 hours\n- Affected individuals: \"without undue delay\" if high risk\n\n**Penalties:** Up to 20 million euros or 4% of annual global revenue, whichever is higher.\n\n**Practical Takeaway:** Start with data mapping to understand what personal data you collect, where it flows, and what legal basis applies to each processing activity.",
+      followUp: "**GDPR Implementation Steps:**\n\n1. **Data Mapping**\n   - Identify all personal data categories\n   - Document data flows and processing activities\n   - Identify legal basis for each activity\n\n2. **Privacy Documentation**\n   - Privacy notices for each collection point\n   - Records of processing activities\n   - Data Protection Impact Assessments (where required)\n\n3. **Technical Controls**\n   - Encryption and pseudonymization\n   - Access controls\n   - Data retention automation\n\n4. **Organizational Measures**\n   - DPO appointment (if required)\n   - Staff training\n   - Vendor agreements (Data Processing Agreements)\n\n5. **Rights Management**\n   - Processes to handle data subject requests\n   - 30-day response timeline\n\n**International Transfers:**\n- Standard Contractual Clauses (SCCs)\n- Binding Corporate Rules (for corporate groups)\n- Adequacy decisions\n\nWhat specific area would you like to explore?"
     },
-    encryption: {
-      main: "**Encryption Best Practices:**\n\n**Data at Rest:**\n• AES-256 for symmetric encryption\n• Full disk encryption (BitLocker, FileVault)\n• Database-level encryption (TDE)\n\n**Data in Transit:**\n• TLS 1.3 minimum\n• Perfect forward secrecy\n• Certificate management\n\n**Key Management:**\n• HSM for sensitive keys\n• Regular key rotation\n• Secure key storage\n\n**Compliance Requirements:**\n• HIPAA requires encryption\n• PCI-DSS mandates it\n• GDPR recommends it\n\nNeed encryption guidance? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on Encryption:**\n\n**Algorithm Selection:**\n• AES-256 (symmetric)\n• RSA-2048+ (asymmetric)\n• SHA-256+ (hashing)\n\n**Common Mistakes:**\n• Rolling own crypto\n• Weak key derivation\n• Insecure random generation\n• Key exposure in logs\n\n**Tools:**\n• OpenSSL\n• libsodium\n• AWS KMS/Azure Key Vault\n\nNeed technical implementation help?"
+    nist: {
+      main: "**NIST Cybersecurity Framework Overview**\n\nThe NIST CSF is a voluntary framework providing a common language for managing cybersecurity risk. It's widely adopted across industries and often required for federal contractors.\n\n**Five Core Functions:**\n\n1. **Identify** - Asset management, risk assessment, governance\n2. **Protect** - Access control, training, data security\n3. **Detect** - Continuous monitoring, detection processes\n4. **Respond** - Response planning, communications, mitigation\n5. **Recover** - Recovery planning, improvements, communications\n\n**Implementation Tiers:**\n- Tier 1: Partial (ad hoc, reactive)\n- Tier 2: Risk Informed (awareness, limited practice)\n- Tier 3: Repeatable (formal policies, consistent)\n- Tier 4: Adaptive (continuous improvement, proactive)\n\n**CSF 2.0 Updates (2024):**\n- Added \"Govern\" as sixth function\n- Enhanced supply chain risk management\n- Improved metrics and measurement guidance\n\n**Practical Takeaway:** Use the framework to establish a common security language across your organization and as a foundation for communicating with leadership about risk.",
+      followUp: "**NIST Implementation Approach:**\n\n**Step 1: Prioritize and Scope**\n- Identify business objectives\n- Determine critical systems and data\n- Define implementation scope\n\n**Step 2: Orient**\n- Identify existing security practices\n- Understand regulatory requirements\n- Map current state to framework\n\n**Step 3: Create Current Profile**\n- Assess current function outcomes\n- Document control status\n- Identify gaps\n\n**Step 4: Conduct Risk Assessment**\n- Analyze threats and vulnerabilities\n- Determine likelihood and impact\n- Prioritize risks\n\n**Step 5: Create Target Profile**\n- Define desired outcomes\n- Set improvement priorities\n- Align with business needs\n\n**Step 6: Implement Action Plan**\n- Address priority gaps\n- Allocate resources\n- Track progress\n\n**Related NIST Publications:**\n- SP 800-53: Security controls catalog\n- SP 800-171: CUI protection\n- SP 800-37: Risk management framework\n\nWhich aspect would be most helpful to explore further?"
+    },
+    iso27001: {
+      main: "**ISO 27001 Overview**\n\nISO 27001 is the international standard for Information Security Management Systems (ISMS). Certification demonstrates a systematic approach to managing sensitive information.\n\n**Key Components:**\n\n1. **Context of the Organization** - Understanding internal/external factors\n2. **Leadership** - Management commitment and policy\n3. **Planning** - Risk assessment and treatment\n4. **Support** - Resources, competence, awareness\n5. **Operation** - Implementing risk treatment plans\n6. **Performance Evaluation** - Monitoring, audit, review\n7. **Improvement** - Nonconformity handling, continual improvement\n\n**Annex A Controls (93 controls in 4 themes):**\n- Organizational controls\n- People controls\n- Physical controls\n- Technological controls\n\n**Certification Process:**\n- Stage 1: Documentation review\n- Stage 2: Implementation audit\n- Annual surveillance audits\n- Recertification every 3 years\n\n**Practical Takeaway:** ISO 27001 provides structure for security programs. The Statement of Applicability (SoA) is your key document linking selected controls to identified risks.",
+      followUp: "**ISO 27001 Implementation Timeline:**\n\n**Phase 1: Gap Assessment (4-6 weeks)**\n- Current state analysis\n- Risk assessment methodology\n- Scope definition\n\n**Phase 2: ISMS Development (8-12 weeks)**\n- Policy and procedure creation\n- Risk assessment execution\n- Statement of Applicability\n\n**Phase 3: Implementation (12-24 weeks)**\n- Control deployment\n- Training and awareness\n- Evidence collection\n\n**Phase 4: Internal Audit (2-4 weeks)**\n- Audit planning\n- Findings and remediation\n- Management review\n\n**Phase 5: Certification (4-8 weeks)**\n- Stage 1 audit\n- Remediation (if needed)\n- Stage 2 audit\n\n**Estimated Total: 9-18 months**\n\n**Integration Opportunities:**\n- ISO 27017: Cloud security\n- ISO 27018: Cloud privacy\n- ISO 27701: Privacy management\n\nWould you like details on any specific phase?"
+    },
+    ai_governance: {
+      main: "**AI Governance and Security**\n\nAs organizations adopt AI and machine learning, governance frameworks are emerging to manage associated risks.\n\n**Key Risk Areas:**\n\n1. **Data Quality and Bias** - Training data issues leading to unfair outcomes\n2. **Privacy** - Personal data in training sets and model outputs\n3. **Security** - Model theft, adversarial attacks, prompt injection\n4. **Transparency** - Explainability of decisions affecting individuals\n5. **Accountability** - Responsibility for AI-driven decisions\n\n**Emerging Frameworks:**\n\n- **EU AI Act** - Risk-based regulation (prohibited, high-risk, limited, minimal)\n- **NIST AI RMF** - Risk management framework for AI systems\n- **ISO 42001** - AI management system standard\n- **IEEE 7000** - Ethical design for autonomous systems\n\n**Healthcare-Specific Concerns:**\n- AI/ML as medical devices (FDA oversight)\n- Clinical decision support risk levels\n- PHI in training data\n\n**Practical Takeaway:** Establish AI governance policies before deploying AI systems. Include risk assessment, human oversight requirements, and monitoring for drift and bias.",
+      followUp: "**AI Governance Implementation:**\n\n**Policy Framework:**\n- Acceptable use policy for AI tools\n- Approved AI vendor list\n- Data governance for AI training\n- Model deployment approval process\n\n**Risk Assessment Questions:**\n- What decisions will AI influence?\n- Who is affected by those decisions?\n- What is the impact of errors?\n- Can decisions be explained?\n- Is human oversight required?\n\n**Technical Controls:**\n- Input validation and sanitization\n- Output filtering\n- Model versioning and lineage\n- Monitoring for drift\n- Audit logging\n\n**Compliance Considerations:**\n- HIPAA: AI accessing PHI requires BAAs\n- GDPR: Automated decision-making rights\n- Financial: Model risk management (SR 11-7)\n\n**Organizational Structure:**\n- AI ethics committee or board\n- Clear ownership and accountability\n- Regular review cadence\n\nWhat aspect of AI governance is most relevant to your situation?"
     },
     zero_trust: {
-      main: "**Zero Trust Security Model:**\n\n**Core Principles:**\n• **Never trust, always verify**: Every request authenticated\n• **Least privilege access**: Minimum necessary permissions\n• **Assume breach**: Design for lateral movement prevention\n\n**Key Components:**\n• Identity verification (strong MFA)\n• Device health validation\n• Micro-segmentation\n• Continuous monitoring\n• Encrypted communications\n\n**Implementation:**\n• Start with identity\n• Map sensitive data flows\n• Segment networks\n• Add monitoring layers\n\nNeed help implementing Zero Trust? View our [Services](#services)!",
-      followUp: "**More on Zero Trust:**\n\n**NIST SP 800-207 Framework:**\n• Policy Engine\n• Policy Administrator\n• Policy Enforcement Points\n\n**Quick Wins:**\n• Implement MFA everywhere\n• Remove VPN dependencies\n• Segment critical systems\n• Log all access attempts\n\n**Maturity Journey:**\n• Basic: Identity-focused\n• Intermediate: Device trust\n• Advanced: Full micro-segmentation\n\nWant a Zero Trust assessment?"
+      main: "**Zero Trust Architecture**\n\nZero Trust is a security model based on the principle of \"never trust, always verify\" - no implicit trust is granted based on network location.\n\n**Core Principles:**\n\n1. **Verify Explicitly** - Authenticate and authorize every access request\n2. **Least Privilege Access** - Just-in-time, just-enough access\n3. **Assume Breach** - Minimize blast radius, segment access\n\n**Key Components:**\n\n- **Identity Verification** - Strong MFA, continuous validation\n- **Device Health** - Compliance checks, endpoint security\n- **Network Segmentation** - Micro-segmentation, software-defined perimeter\n- **Application Access** - Per-app authorization, not network access\n- **Data Protection** - Classification, encryption, DLP\n- **Analytics** - Behavior monitoring, anomaly detection\n\n**Implementation Approach:**\n1. Identify critical assets and data flows\n2. Map transaction flows\n3. Build Zero Trust architecture\n4. Create policies\n5. Monitor and maintain\n\n**Practical Takeaway:** Zero Trust is a journey, not a destination. Start with identity (MFA everywhere) and expand to device trust and microsegmentation over time.",
+      followUp: "**Zero Trust Maturity Model:**\n\n**Stage 1: Traditional**\n- Perimeter-based security\n- Implicit trust inside network\n- Static policies\n\n**Stage 2: Advanced**\n- MFA deployed widely\n- Some identity-based policies\n- Basic device health checks\n\n**Stage 3: Optimal**\n- Continuous verification\n- Dynamic, risk-based policies\n- Full microsegmentation\n- Real-time analytics\n\n**Quick Wins to Start:**\n1. Enforce MFA on all accounts\n2. Implement conditional access policies\n3. Remove VPN for SaaS applications\n4. Enable device compliance checks\n5. Segment privileged access\n\n**NIST SP 800-207:**\n- Zero Trust Architecture reference\n- Deployment models\n- Migration approaches\n\nWould you like implementation guidance for a specific component?"
     },
-    xss: {
-      main: "**Cross-Site Scripting (XSS) Prevention:**\n\n**Types:**\n• **Stored XSS**: Malicious script saved in database\n• **Reflected XSS**: Script in URL parameters\n• **DOM-based XSS**: Client-side manipulation\n\n**Prevention:**\n• Output encoding (HTML, JS, URL)\n• Content Security Policy (CSP)\n• Input validation\n• HttpOnly cookies\n• Modern frameworks with auto-escaping\n\n**Legal Implications:**\n• CFAA violations possible\n• Privacy law implications\n• Civil liability for damages\n\nNeed XSS testing? [Contact us](mailto:a.bardhan2004@gmail.com)!",
-      followUp: "**More on XSS Defense:**\n\n**CSP Implementation:**\n• default-src 'self'\n• script-src 'strict-dynamic'\n• Report-URI for monitoring\n\n**Testing:**\n• OWASP ZAP\n• Burp Suite\n• Browser DevTools\n\n**Remediation Priority:**\n• Stored XSS (highest)\n• Reflected XSS\n• DOM-based XSS\n\nNeed help with implementation?"
+    ransomware: {
+      main: "**Ransomware Protection and Response**\n\nRansomware attacks encrypt organizational data and demand payment for decryption. Prevention and preparation are critical.\n\n**Prevention Controls:**\n\n1. **Endpoint Protection** - EDR/XDR solutions with behavioral detection\n2. **Email Security** - Anti-phishing, attachment sandboxing\n3. **Patch Management** - Timely updates for known vulnerabilities\n4. **Access Control** - Least privilege, MFA, privileged access management\n5. **Network Segmentation** - Limit lateral movement\n6. **Backup Strategy** - 3-2-1 rule with offline/immutable copies\n\n**Response Steps:**\n\n1. **Isolate** - Disconnect affected systems immediately\n2. **Preserve** - Capture forensic evidence before remediation\n3. **Notify** - Legal, insurance, law enforcement (FBI, CISA)\n4. **Investigate** - Determine scope and entry point\n5. **Recover** - Restore from clean backups\n6. **Report** - Regulatory notifications as required\n\n**Practical Takeaway:** Your backup strategy is your most important control. Test restores regularly and ensure backups cannot be encrypted by an attacker with network access.",
+      followUp: "**Ransomware Payment Considerations:**\n\n**Arguments Against Payment:**\n- No guarantee of decryption\n- May fund further attacks\n- OFAC sanctions risk (certain threat actors)\n- May be targeted again\n\n**If Considering Payment:**\n- Engage legal counsel first\n- Verify entity is not sanctioned\n- Document decision rationale\n- Engage professional negotiators\n\n**Cyber Insurance:**\n- Review coverage and exclusions\n- Understand notification requirements\n- Know your incident response panel\n\n**Tabletop Exercises:**\n- Annual ransomware scenario exercises\n- Include executive leadership\n- Test communication plans\n- Validate backup recovery\n\n**Recovery Planning:**\n- Prioritize system restoration order\n- Maintain offline documentation\n- Pre-establish vendor relationships\n- Test full recovery procedures\n\nWould you like help developing a ransomware response plan?"
     },
-    csrf: {
-      main: "**Cross-Site Request Forgery (CSRF) Prevention:**\n\n**How It Works:**\n• Attacker tricks user into executing unwanted action\n• Leverages authenticated session\n• Can cause unauthorized transactions\n\n**Prevention:**\n• **CSRF Tokens**: Unique per-session/request\n• **SameSite Cookies**: Strict or Lax attribute\n• **Origin/Referer Validation**: Check request source\n• **Custom Headers**: For API calls\n\n**Framework Support:**\n• Most modern frameworks include protection\n• Django, Rails, Express have built-in CSRF\n\nNeed CSRF testing? Check our [Services](#services)!",
-      followUp: "**More on CSRF Defense:**\n\n**Token Implementation:**\n• Synchronizer token pattern\n• Double submit cookies\n• Signed tokens (JWT-style)\n\n**API Considerations:**\n• Pre-flight checks for CORS\n• Custom headers requirement\n• Token in request body\n\n**Testing:**\n• Burp Suite CSRF PoC\n• OWASP ZAP\n• Manual verification\n\nNeed implementation guidance?"
+    phishing: {
+      main: "**Phishing Prevention and Response**\n\nPhishing remains the most common initial attack vector. A comprehensive defense requires technical controls and user awareness.\n\n**Technical Controls:**\n\n1. **Email Authentication** - SPF, DKIM, DMARC properly configured\n2. **Email Filtering** - Gateway with URL rewriting and sandboxing\n3. **Anti-Spoofing** - Protection against domain impersonation\n4. **Browser Isolation** - For high-risk users or links\n5. **MFA** - Prevents credential theft impact\n\n**Human Controls:**\n\n1. **Security Awareness Training** - Regular, engaging content\n2. **Phishing Simulations** - Measure and improve awareness\n3. **Clear Reporting Process** - Easy way to report suspicious emails\n4. **Positive Reinforcement** - Reward reporting, not punishment\n\n**Response Process:**\n1. Report to security team\n2. Remove from all inboxes\n3. Block sender/domain\n4. Check for clicks and credential entry\n5. Reset credentials if compromised\n6. Forensic investigation if needed\n\n**Practical Takeaway:** Even with perfect technical controls, assume some phishing will reach users. Focus on making reporting easy and responding quickly.",
+      followUp: "**Advanced Phishing Threats:**\n\n**Business Email Compromise (BEC):**\n- Impersonation of executives\n- Wire transfer requests\n- Vendor payment fraud\n\n**Prevention:**\n- Verification procedures for payment changes\n- Multi-person approval for transfers\n- Out-of-band confirmation\n\n**Spear Phishing:**\n- Highly targeted attacks\n- Research-based social engineering\n- Often precedes larger attacks\n\n**Vishing and Smishing:**\n- Voice phishing (phone calls)\n- SMS phishing (text messages)\n- Require separate awareness training\n\n**Metrics to Track:**\n- Phishing simulation click rates\n- Report rates (should increase)\n- Time to report\n- Time to remediate\n\nWould you like help designing a phishing awareness program?"
+    },
+    encryption: {
+      main: "**Encryption Best Practices**\n\nEncryption is a foundational control for protecting data confidentiality, required or recommended by most compliance frameworks.\n\n**Data at Rest:**\n\n- **Algorithm:** AES-256 (symmetric)\n- **Full Disk Encryption:** BitLocker, FileVault, LUKS\n- **Database Encryption:** Transparent Data Encryption (TDE)\n- **File-Level:** For specific sensitive files\n\n**Data in Transit:**\n\n- **Protocol:** TLS 1.2 minimum, TLS 1.3 preferred\n- **Certificate Management:** Automated renewal, short validity\n- **Perfect Forward Secrecy:** Protect past sessions\n\n**Key Management:**\n\n- **Hardware Security Modules (HSMs):** For high-value keys\n- **Key Rotation:** Regular rotation schedule\n- **Separation of Duties:** Key managers vs. data access\n- **Cloud KMS:** AWS KMS, Azure Key Vault, GCP Cloud KMS\n\n**Compliance Requirements:**\n- HIPAA: Required for ePHI (proposed 2026 rules make this explicit)\n- PCI-DSS: Required for cardholder data\n- GDPR: Recommended as technical measure\n\n**Practical Takeaway:** Encryption is only as strong as your key management. Invest in proper key lifecycle management before implementing encryption.",
+      followUp: "**Common Encryption Mistakes:**\n\n1. **Weak Key Derivation** - Using passwords directly as keys\n2. **Insecure Random Generation** - Predictable key generation\n3. **Key Storage Issues** - Keys stored with encrypted data\n4. **Rolling Your Own Crypto** - Using unvetted implementations\n5. **Ignoring Metadata** - Encrypting data but exposing patterns\n\n**Algorithm Selection:**\n- **Symmetric:** AES-256-GCM (authenticated)\n- **Asymmetric:** RSA-2048+ or ECDSA P-256+\n- **Hashing:** SHA-256 or SHA-3\n- **Password Storage:** Argon2, bcrypt, scrypt\n\n**Deprecated (Avoid):**\n- DES, 3DES\n- MD5, SHA-1\n- RC4\n- TLS 1.0/1.1\n\nWould you like guidance on implementing encryption for a specific use case?"
+    },
+    authentication: {
+      main: "**Authentication Security Best Practices**\n\nStrong authentication is foundational to security and increasingly required by compliance frameworks.\n\n**Multi-Factor Authentication (MFA):**\n\n**Factor Types:**\n- Something you know (password)\n- Something you have (phone, hardware key)\n- Something you are (biometrics)\n\n**Method Strength (strongest to weakest):**\n1. Hardware security keys (FIDO2/WebAuthn)\n2. Authenticator apps (TOTP)\n3. Push notifications\n4. SMS/Voice (vulnerable to SIM swapping)\n\n**Password Requirements:**\n- Minimum 12+ characters\n- Check against breach databases\n- No complexity rules (counterproductive)\n- No periodic forced rotation\n- Password manager encouraged\n\n**Passwordless Options:**\n- FIDO2/WebAuthn\n- Passkeys\n- Certificate-based\n\n**Compliance Drivers:**\n- HIPAA 2026: MFA will be mandatory\n- PCI-DSS 4.0: MFA for all access to CDE\n- SOC 2: MFA commonly expected\n\n**Practical Takeaway:** Deploy MFA for all users, prioritizing privileged accounts and external access. Hardware keys for highest-risk users.",
+      followUp: "**MFA Implementation Strategy:**\n\n**Phase 1: High Priority**\n- Privileged accounts (admins)\n- Remote access\n- Email\n- Cloud administration\n\n**Phase 2: Expand**\n- All employee accounts\n- Sensitive applications\n- VPN access\n\n**Phase 3: Universal**\n- Customer-facing applications\n- API access\n- Machine identities\n\n**Rollout Considerations:**\n- User communication plan\n- Help desk preparation\n- Recovery procedures\n- Exception process\n\n**Session Management:**\n- Appropriate timeout values\n- Secure cookie attributes\n- Session invalidation on logout\n- Concurrent session limits\n\nWould you like help with MFA rollout planning?"
+    },
+    penetration: {
+      main: "**Penetration Testing Overview**\n\nPenetration testing simulates real-world attacks to identify vulnerabilities before malicious actors do. It's required or recommended by most compliance frameworks.\n\n**Test Types:**\n\n- **Black Box:** No prior knowledge provided\n- **White Box:** Full access to architecture/code\n- **Gray Box:** Partial information (most common)\n\n**Scope Categories:**\n\n- **Network:** External and internal infrastructure\n- **Web Application:** OWASP Top 10 focus\n- **Mobile Application:** iOS/Android apps\n- **API:** REST/GraphQL endpoints\n- **Social Engineering:** Phishing, physical access\n- **Red Team:** Full adversary simulation\n\n**Legal Requirements:**\n\n- Written authorization (Rules of Engagement)\n- Defined scope and boundaries\n- Insurance coverage\n- Clear start/end dates\n- Emergency contacts\n\n**Compliance Drivers:**\n- PCI-DSS: Annual penetration test required\n- HIPAA: Technical evaluation required\n- SOC 2: Often expected by auditors\n\n**Practical Takeaway:** Penetration tests are point-in-time assessments. Combine with continuous vulnerability scanning and regular testing cadence.",
+      followUp: "**Penetration Test Planning:**\n\n**Vendor Selection:**\n- Relevant certifications (OSCP, GPEN, CEH)\n- Industry experience\n- Methodology documentation\n- Insurance coverage\n- References\n\n**Preparation:**\n- Asset inventory for scoping\n- Test environment availability\n- Credential creation for authenticated testing\n- WAF/IPS exceptions if needed\n- Stakeholder notification\n\n**During Testing:**\n- Communication channel established\n- Status updates scheduled\n- Severity threshold for immediate notification\n\n**After Testing:**\n- Technical debrief\n- Executive summary\n- Remediation prioritization\n- Retest validation\n\n**Testing Cadence:**\n- Annual (minimum for compliance)\n- After major changes\n- For new applications before launch\n\nWould you like help developing a penetration testing program?"
+    },
+    devsecops: {
+      main: "**DevSecOps Overview**\n\nDevSecOps integrates security throughout the software development lifecycle, making security a shared responsibility rather than a gate at the end.\n\n**Core Principles:**\n\n1. **Shift Left** - Find vulnerabilities early when they're cheaper to fix\n2. **Automation** - Security checks in CI/CD pipelines\n3. **Continuous Feedback** - Fast feedback loops for developers\n4. **Shared Responsibility** - Security is everyone's job\n\n**Security in the Pipeline:**\n\n**Commit Stage:**\n- Secret scanning\n- SAST (Static Application Security Testing)\n- Dependency scanning (SCA)\n\n**Build Stage:**\n- Container image scanning\n- Infrastructure as Code scanning\n\n**Deploy Stage:**\n- DAST (Dynamic Application Security Testing)\n- Configuration validation\n\n**Runtime:**\n- RASP (Runtime Application Self-Protection)\n- Monitoring and alerting\n\n**Key Metrics:**\n- Mean time to remediate vulnerabilities\n- Vulnerability escape rate\n- Security debt tracking\n\n**Practical Takeaway:** Start small with secret scanning and dependency analysis - they provide high value with low friction.",
+      followUp: "**DevSecOps Implementation:**\n\n**Quick Wins:**\n1. Secret scanning in pre-commit hooks\n2. Dependency vulnerability scanning\n3. Basic SAST in pull requests\n4. Container base image scanning\n\n**Tool Categories:**\n- **SAST:** SonarQube, Semgrep, CodeQL\n- **SCA:** Snyk, Dependabot, OWASP Dependency-Check\n- **Container:** Trivy, Clair, Anchore\n- **DAST:** OWASP ZAP, Burp Suite\n- **Secret Scanning:** GitLeaks, TruffleHog\n\n**Cultural Changes:**\n- Security champions program\n- Security training for developers\n- Blameless post-mortems\n- Positive recognition for security contributions\n\n**Metrics to Track:**\n- Vulnerabilities found in dev vs. production\n- Time from discovery to fix\n- Pipeline failure rate for security\n- Developer satisfaction with tools\n\nWould you like guidance on implementing specific DevSecOps controls?"
+    },
+    access_control: {
+      main: "**Access Control Best Practices**\n\nAccess control ensures only authorized individuals can access resources, and only to the extent necessary for their role.\n\n**Key Principles:**\n\n1. **Least Privilege** - Minimum access necessary for job function\n2. **Separation of Duties** - Prevent single points of control\n3. **Need to Know** - Access limited to required information\n\n**Access Control Models:**\n\n- **RBAC (Role-Based):** Access based on job roles\n- **ABAC (Attribute-Based):** Dynamic policies based on attributes\n- **MAC (Mandatory):** Classification-based, common in government\n- **DAC (Discretionary):** Owner-controlled, common in consumer\n\n**Implementation:**\n\n- Centralized identity management (IdP)\n- Just-in-time privileged access\n- Regular access reviews (quarterly minimum)\n- Automated provisioning/deprovisioning\n- Emergency access procedures\n\n**Privileged Access Management (PAM):**\n- Vault for credentials\n- Session recording\n- Just-in-time elevation\n\n**Practical Takeaway:** Access creep is common. Implement regular access reviews with actual business owner involvement, not just rubber-stamping.",
+      followUp: "**Access Review Process:**\n\n**Review Frequency:**\n- Privileged access: Quarterly\n- Standard access: Semi-annually\n- Sensitive systems: Monthly\n\n**Review Process:**\n1. Generate access reports by manager/application\n2. Distribute to appropriate reviewers\n3. Reviewers certify or revoke access\n4. Track completion and escalate\n5. Remove uncertified access\n6. Document and retain evidence\n\n**Joiner/Mover/Leaver:**\n- Automated provisioning from HR source\n- Role changes trigger access review\n- Same-day termination of access for leavers\n\n**Common Gaps:**\n- Shared accounts\n- Service accounts with excessive access\n- Orphaned accounts\n- Access granted but never used\n\nWould you like help designing an access review program?"
+    },
+    incident_response: {
+      main: "**Incident Response Overview**\n\nA structured incident response capability is essential for minimizing damage from security events.\n\n**Incident Response Phases:**\n\n1. **Preparation** - Plans, team, tools, training\n2. **Detection and Analysis** - Identify and assess incidents\n3. **Containment** - Limit damage and prevent spread\n4. **Eradication** - Remove threat from environment\n5. **Recovery** - Restore normal operations\n6. **Post-Incident** - Lessons learned, improvements\n\n**Key Documentation:**\n\n- Incident response plan\n- Communication templates\n- Escalation matrix\n- Contact lists (internal, legal, insurance, law enforcement)\n- Playbooks for common scenarios\n\n**Roles and Responsibilities:**\n\n- Incident Commander\n- Technical Lead\n- Communications Lead\n- Legal/Compliance\n- Executive Sponsor\n\n**Regulatory Considerations:**\n- HIPAA: Breach notification within 60 days\n- GDPR: 72 hours to supervisory authority\n- State laws: Various requirements\n\n**Practical Takeaway:** Practice your incident response through tabletop exercises at least annually. The middle of an incident is not the time to figure out your process.",
+      followUp: "**Incident Response Maturity:**\n\n**Level 1: Basic**\n- Documented plan exists\n- Contact lists maintained\n- Basic detection capability\n\n**Level 2: Defined**\n- Playbooks for common incidents\n- Regular tabletop exercises\n- Defined roles and responsibilities\n- Integration with legal/PR\n\n**Level 3: Managed**\n- 24/7 monitoring capability\n- Automated detection and alerting\n- Forensic capability (internal or retainer)\n- Regular plan testing\n\n**Level 4: Optimized**\n- Threat intelligence integration\n- Automated response actions\n- Continuous improvement process\n- Metrics and KPIs tracked\n\n**Tabletop Exercise Scenarios:**\n- Ransomware attack\n- Data breach/exfiltration\n- Business email compromise\n- Insider threat\n- Third-party compromise\n\nWould you like help developing incident response playbooks?"
+    },
+    risk_assessment: {
+      main: "**Security Risk Assessment**\n\nRisk assessment is the foundation of an effective security program, helping prioritize resources based on actual threats and impacts.\n\n**Risk Assessment Process:**\n\n1. **Asset Identification** - What are you protecting?\n2. **Threat Identification** - What could harm assets?\n3. **Vulnerability Assessment** - What weaknesses exist?\n4. **Impact Analysis** - What's the potential harm?\n5. **Likelihood Assessment** - How probable is the event?\n6. **Risk Calculation** - Risk = Likelihood x Impact\n7. **Risk Treatment** - Accept, mitigate, transfer, avoid\n\n**Common Frameworks:**\n\n- **NIST SP 800-30:** Risk assessment guidance\n- **ISO 27005:** Information security risk management\n- **FAIR:** Factor Analysis of Information Risk (quantitative)\n- **OCTAVE:** Operationally Critical Threat, Asset, and Vulnerability Evaluation\n\n**Documentation Requirements:**\n- Risk register\n- Risk treatment plans\n- Risk acceptance documentation\n- Regular review records\n\n**Practical Takeaway:** Risk assessments should inform decisions, not just check compliance boxes. Focus on scenarios that could actually harm your organization.",
+      followUp: "**Risk Assessment Best Practices:**\n\n**Qualitative vs. Quantitative:**\n- **Qualitative:** High/Medium/Low ratings (faster, simpler)\n- **Quantitative:** Dollar values and probabilities (more precise, more effort)\n\n**Common Mistakes:**\n- Treating it as one-time vs. ongoing\n- Not involving business stakeholders\n- Focusing only on technical risks\n- Incomplete asset inventory\n- Accepting risk without authority\n\n**Risk Treatment Options:**\n- **Mitigate:** Implement controls to reduce risk\n- **Transfer:** Insurance, contracts with third parties\n- **Accept:** Document acceptance by appropriate authority\n- **Avoid:** Eliminate the risky activity\n\n**Review Cadence:**\n- Annual comprehensive assessment\n- Triggered by significant changes\n- Continuous monitoring of key risks\n\nWould you like guidance on conducting a risk assessment for your organization?"
+    },
+    vendor_management: {
+      main: "**Third-Party Risk Management**\n\nVendors often have access to sensitive data and systems. Managing third-party risk is critical for security and compliance.\n\n**Vendor Risk Lifecycle:**\n\n1. **Due Diligence** - Assess before engagement\n2. **Contracting** - Security requirements in agreements\n3. **Onboarding** - Secure integration\n4. **Ongoing Monitoring** - Continuous assessment\n5. **Offboarding** - Secure termination\n\n**Risk Assessment Factors:**\n\n- Data access and sensitivity\n- System access and privileges\n- Business criticality\n- Regulatory implications\n- Geographic considerations\n\n**Assessment Methods:**\n\n- Security questionnaires (SIG, CAIQ)\n- SOC 2 reports\n- ISO 27001 certification\n- Penetration test reports\n- On-site assessments (high-risk)\n\n**Contractual Requirements:**\n\n- Security controls and standards\n- Incident notification requirements\n- Right to audit\n- Subcontractor flow-down\n- Data handling and return/destruction\n\n**Practical Takeaway:** Tier your vendors by risk level and apply proportionate assessment rigor. Not every vendor needs the same scrutiny.",
+      followUp: "**Vendor Risk Tiering:**\n\n**Tier 1 (Critical):**\n- Access to highly sensitive data\n- Critical business function\n- Significant regulatory impact\n- Assessment: Full due diligence, annual review\n\n**Tier 2 (Important):**\n- Access to internal data\n- Moderate business impact\n- Assessment: Questionnaire, periodic review\n\n**Tier 3 (Standard):**\n- Limited data access\n- Low business impact\n- Assessment: Basic screening\n\n**Ongoing Monitoring:**\n- Annual reassessment (Tier 1-2)\n- Continuous monitoring services\n- Security rating platforms\n- Incident alerts\n\n**Healthcare-Specific:**\n- Business Associate Agreements required\n- PHI handling documented\n- Breach notification requirements\n\nWould you like help developing a vendor risk management program?"
+    },
+    data_protection: {
+      main: "**Data Protection Best Practices**\n\nData protection encompasses the policies, procedures, and technologies used to ensure data confidentiality, integrity, and availability.\n\n**Data Classification:**\n\n- **Public** - No restrictions on disclosure\n- **Internal** - Business use only\n- **Confidential** - Limited distribution, business impact\n- **Restricted** - Highly sensitive, regulatory or severe impact\n\n**Protection by State:**\n\n**Data at Rest:**\n- Encryption (AES-256)\n- Access controls\n- Secure storage locations\n- Backup protection\n\n**Data in Transit:**\n- TLS 1.2+ encryption\n- VPN for network traffic\n- Secure file transfer\n\n**Data in Use:**\n- Access controls\n- DLP monitoring\n- Screen privacy filters\n- Clean desk policy\n\n**Data Loss Prevention (DLP):**\n- Endpoint DLP\n- Network DLP\n- Cloud DLP\n- Email DLP\n\n**Practical Takeaway:** Start with data discovery and classification. You cannot protect data you don't know exists.",
+      followUp: "**Data Lifecycle Management:**\n\n**Creation/Collection:**\n- Minimize collection\n- Classify at creation\n- Document purpose\n\n**Storage:**\n- Appropriate security by classification\n- Access controls\n- Encryption where required\n\n**Use:**\n- Purpose limitation\n- Minimum necessary access\n- Audit logging\n\n**Sharing:**\n- Approved methods by classification\n- Encryption in transit\n- Third-party agreements\n\n**Retention:**\n- Defined retention periods\n- Legal hold capabilities\n- Automated enforcement where possible\n\n**Disposal:**\n- Secure deletion methods\n- Certificate of destruction\n- Media sanitization (NIST 800-88)\n\nWould you like guidance on implementing data classification?"
+    },
+    cloud_security: {
+      main: "**Cloud Security Overview**\n\nCloud security requires understanding the shared responsibility model and implementing controls appropriate to your cloud deployment.\n\n**Shared Responsibility Model:**\n\n**Cloud Provider Responsible For:**\n- Physical security\n- Network infrastructure\n- Hypervisor/host security\n\n**Customer Responsible For:**\n- Data classification and protection\n- Identity and access management\n- Application security\n- Operating system (IaaS)\n- Network configuration\n\n**Key Security Controls:**\n\n1. **Identity and Access** - SSO, MFA, least privilege\n2. **Network Security** - VPCs, security groups, WAF\n3. **Data Protection** - Encryption, key management\n4. **Logging and Monitoring** - CloudTrail, Security Hub, SIEM\n5. **Configuration Management** - IaC, compliance scanning\n\n**Cloud-Specific Risks:**\n- Misconfiguration (leading cause of breaches)\n- Excessive permissions\n- Exposed storage buckets\n- Inadequate logging\n\n**Practical Takeaway:** Misconfiguration is the biggest cloud security risk. Implement automated configuration scanning and remediation.",
+      followUp: "**Cloud Security Maturity:**\n\n**Foundation:**\n- Enable cloud-native security features\n- Centralized logging\n- MFA for all accounts\n- Baseline configurations\n\n**Intermediate:**\n- Cloud Security Posture Management (CSPM)\n- Infrastructure as Code\n- Automated compliance checks\n- Workload protection\n\n**Advanced:**\n- Cloud-native SIEM/SOAR\n- Zero Trust network architecture\n- DevSecOps integration\n- Continuous compliance\n\n**Multi-Cloud Considerations:**\n- Consistent policies across platforms\n- Unified visibility\n- Skill development for each platform\n\n**Compliance in Cloud:**\n- Most frameworks are cloud-agnostic\n- FedRAMP for federal workloads\n- Provider certifications (SOC 2, ISO, etc.)\n\nWould you like guidance on cloud security for a specific platform?"
     }
   };
   
@@ -336,10 +356,11 @@ const getTopicResponse = (topic: string, isFollowUp: boolean): string => {
     return isFollowUp ? response.followUp : response.main;
   }
   
-  return "Thanks for your question! As an AI security consultant, I can help with:\n\n• **US Cybersecurity Laws** (CFAA, ECPA, GLBA, HIPAA)\n• **Security best practices** and frameworks\n• **DevSecOps** implementation strategies\n• **Compliance guidance** (SOC 2, GDPR, PCI-DSS)\n• **Vulnerability assessment** approaches\n• **Threat prevention** strategies\n\nCould you provide more details about your specific security concern? Or explore our [Services](#services) to see how we can help!";
+  // Fallback response
+  return "I can help with that topic. To provide the most useful guidance, could you share more context about:\n\n- Your organization type (healthcare, financial, technology)\n- The specific compliance frameworks you're working with\n- Whether you're implementing new controls or addressing specific gaps\n\nThis will help me tailor my response to your situation.";
 };
 
-// Safe URL validator - only allows http, https, mailto, and anchor links
+// Safe URL validator
 const isValidUrl = (url: string): boolean => {
   const trimmedUrl = url.trim().toLowerCase();
   return (
@@ -350,9 +371,8 @@ const isValidUrl = (url: string): boolean => {
   );
 };
 
-// Safe markdown-like formatting with sanitization
+// Safe markdown formatting with sanitization
 const formatMessageContent = (content: string): string => {
-  // First, escape any HTML in the content to prevent injection
   const escaped = content
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -360,7 +380,6 @@ const formatMessageContent = (content: string): string => {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
   
-  // Apply safe formatting
   const formatted = escaped
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => {
@@ -368,18 +387,17 @@ const formatMessageContent = (content: string): string => {
         const sanitizedUrl = url.replace(/"/g, '&quot;');
         return `<a href="${sanitizedUrl}" class="text-primary underline" rel="noopener noreferrer">${text}</a>`;
       }
-      return text; // Return just the text if URL is invalid
+      return text;
     })
     .replace(/\n/g, '<br />');
   
-  // Final sanitization with DOMPurify
   return DOMPurify.sanitize(formatted, {
     ALLOWED_TAGS: ['strong', 'a', 'br'],
     ALLOWED_ATTR: ['href', 'class', 'rel'],
   });
 };
 
-// Component for rendering message content safely
+// Message content component
 const MessageContent = ({ content, role }: { content: string; role: "user" | "assistant" }) => {
   const sanitizedHtml = useMemo(() => formatMessageContent(content), [content]);
   
@@ -400,7 +418,7 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
     {
       id: "welcome",
       role: "assistant",
-      content: "👋 Hi! I'm Securvio, your AI security consultant. Ask me anything about security best practices, DevSecOps, compliance, or explore our resources below!",
+      content: "Welcome. I'm Securvio AI, your cybersecurity and compliance assistant.\n\nI specialize in **HIPAA** (including 2026 updates), **SOC 2**, **GDPR**, **NIST**, **ISO 27001**, and **AI governance frameworks**.\n\nHow can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -431,7 +449,6 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
     setInput("");
     setIsTyping(true);
 
-    // Simulate AI response delay with conversation context
     const currentMessages = [...messages, userMessage];
     setTimeout(() => {
       const aiResponse: Message = {
@@ -441,7 +458,7 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
       };
       setMessages((prev) => [...prev, aiResponse]);
       setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+    }, 800 + Math.random() * 700);
   };
 
   const handleQuickQuestion = (question: string) => {
@@ -458,7 +475,6 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
 
   return (
     <>
-      {/* Chat Toggle Button */}
       <button
         onClick={onToggle}
         className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-glow-lg transition-all duration-300 ${
@@ -471,21 +487,18 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
         {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
       </button>
 
-      {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] h-[600px] max-h-[calc(100vh-8rem)] glass-card border-primary/30 flex flex-col animate-fade-up shadow-glow-lg">
-          {/* Header */}
           <div className="p-4 border-b border-border/50 flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary/10">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h3 className="font-display font-semibold">Securvio AI</h3>
-              <p className="text-xs text-muted-foreground">Your security consultant</p>
+              <p className="text-xs text-muted-foreground">Enterprise Security Assistant</p>
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
@@ -529,7 +542,6 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Links */}
           <div className="px-4 py-2 border-t border-border/50">
             <p className="text-xs text-muted-foreground mb-2">Quick links:</p>
             <div className="flex flex-wrap gap-2">
@@ -546,7 +558,6 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
             </div>
           </div>
 
-          {/* Suggested Questions */}
           {messages.length === 1 && (
             <div className="px-4 py-2 border-t border-border/50">
               <p className="text-xs text-muted-foreground mb-2">Try asking:</p>
@@ -564,7 +575,6 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
             </div>
           )}
 
-          {/* Input */}
           <div className="p-4 border-t border-border/50">
             <div className="flex gap-2">
               <input
@@ -573,7 +583,7 @@ const ChatBot = ({ isOpen, onToggle }: ChatBotProps) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask a security question..."
+                placeholder="Ask a security or compliance question..."
                 className="flex-1 px-4 py-2 bg-secondary border border-border rounded-lg text-sm focus:outline-none focus:border-primary/50 transition-colors"
               />
               <button
