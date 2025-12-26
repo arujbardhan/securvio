@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import securvioLogo from "@/assets/securvio-logo.png";
 
 const navLinks = [
@@ -7,7 +8,7 @@ const navLinks = [
   { name: "DevSecOps", href: "#devsecops" },
   { name: "How It Works", href: "#how-it-works" },
   { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
+  { name: "Download", href: "/download", isRoute: true },
 ];
 
 const Navbar = () => {
@@ -30,13 +31,23 @@ const Navbar = () => {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
-              >
-                {link.name}
-              </a>
+              link.isRoute ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
+                >
+                  {link.name}
+                </a>
+              )
             ))}
             <a
               href="mailto:a.bardhan2004@gmail.com"
@@ -60,14 +71,25 @@ const Navbar = () => {
           <div className="md:hidden py-4 border-t border-border/50 animate-fade-in">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-muted-foreground hover:text-foreground transition-colors py-2"
-                >
-                  {link.name}
-                </a>
+                link.isRoute ? (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                  >
+                    {link.name}
+                  </a>
+                )
               ))}
               <a
                 href="mailto:a.bardhan2004@gmail.com"
