@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   Shield, Lock, Cloud, Search, Download as DownloadIcon, CheckCircle, 
-  ArrowRight, Eye, EyeOff, ChevronDown, Sparkles,
+  ArrowRight, ChevronDown, Sparkles,
   Network, Database, Mail, Phone, User, Building, MessageSquare
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -23,12 +23,7 @@ const Download = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   
-  // Password state
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [isUnlocking, setIsUnlocking] = useState(false);
+  // Download state - demo mode, no authentication required
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -52,29 +47,6 @@ const Download = () => {
     });
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsUnlocking(true);
-    setPasswordError(false);
-    
-    setTimeout(() => {
-      if (password === "prototype") {
-        setIsUnlocked(true);
-        toast({
-          title: "Access Granted",
-          description: "Download link unlocked successfully.",
-        });
-      } else {
-        setPasswordError(true);
-        toast({
-          variant: "destructive",
-          title: "Access Denied",
-          description: "Invalid password. Please contact support.",
-        });
-      }
-      setIsUnlocking(false);
-    }, 800);
-  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -482,91 +454,37 @@ const Download = () => {
               Download Securvio
               <span className="text-gradient"> Enterprise Suite</span>
             </h2>
+            
+            {/* Prototype/Demo Disclaimer */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/30 mb-6 animate-fade-up">
+              <Sparkles className="w-4 h-4 text-yellow-500" />
+              <span className="text-sm text-yellow-500 font-medium">Prototype Demo Version</span>
+            </div>
+            
             <p className="text-lg text-muted-foreground mb-10 animate-fade-up delay-100">
-              Access restricted. Authorized clients and partners can download the latest 
-              Securvio Enterprise build using the access password provided by our support team.
+              This is a demonstration version of the Securvio Enterprise Suite. 
+              For production access, please contact our sales team to schedule a consultation.
             </p>
 
             <div className="glass-card p-8 md:p-12 animate-fade-up delay-200">
-              {isUnlocked ? (
-                <div className="animate-fade-in">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 shadow-glow-lg">
-                    <Shield className="w-10 h-10 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold font-display mb-4">Access Granted</h3>
-                  <p className="text-muted-foreground mb-8">
-                    You can now download the Securvio Enterprise Suite.
-                  </p>
-                  <a
-                    href="/downloads/securvio-enterprise.zip"
-                    download="securvio-enterprise.zip"
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
-                  >
-                    <DownloadIcon className="w-5 h-5" />
-                    Download Now
-                  </a>
-                  <p className="text-xs text-muted-foreground mt-6">
-                    This file contains proprietary software. Do not redistribute without written consent from Securvio.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handlePasswordSubmit}>
-                  <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center mx-auto mb-6 border border-border">
-                    <Lock className={`w-10 h-10 transition-colors ${passwordError ? 'text-destructive' : 'text-muted-foreground'}`} />
-                  </div>
-                  <h3 className="text-xl font-semibold font-display mb-4">Enter Access Password</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Contact <a href="mailto:support@securvio.com" className="text-primary hover:underline">support@securvio.com</a> to request access credentials.
-                  </p>
-                  
-                  <div className="max-w-sm mx-auto">
-                    <div className="relative mb-4">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                          setPasswordError(false);
-                        }}
-                        className={`w-full pl-12 pr-12 py-3 bg-secondary border rounded-lg text-foreground focus:outline-none focus:border-primary/50 transition-colors ${
-                          passwordError ? 'border-destructive' : 'border-border'
-                        }`}
-                        placeholder="Enter password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {passwordError && (
-                      <p className="text-destructive text-sm mb-4 animate-fade-in">
-                        Invalid password. Please try again or contact support.
-                      </p>
-                    )}
-                    <button
-                      type="submit"
-                      disabled={!password || isUnlocking}
-                      className="w-full py-3 bg-secondary text-foreground rounded-lg font-medium hover:bg-secondary/80 transition-all duration-300 border border-border disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                      {isUnlocking ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-4 h-4" />
-                          Unlock Download
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              )}
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 shadow-glow-lg">
+                <Shield className="w-10 h-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold font-display mb-4">Demo Package Available</h3>
+              <p className="text-muted-foreground mb-8">
+                Download the Securvio Enterprise Suite demo to explore our platform capabilities.
+              </p>
+              <a
+                href="/downloads/securvio-enterprise.zip"
+                download="securvio-enterprise.zip"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
+              >
+                <DownloadIcon className="w-5 h-5" />
+                Download Demo
+              </a>
+              <p className="text-xs text-muted-foreground mt-6">
+                This demo package is for evaluation purposes only. Contact <a href="mailto:support@securvio.com" className="text-primary hover:underline">support@securvio.com</a> for production licensing.
+              </p>
             </div>
           </div>
         </div>
