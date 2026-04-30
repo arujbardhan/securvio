@@ -8,6 +8,7 @@ const navLinks = [
   { name: "DevSecOps", href: "#devsecops" },
   { name: "How It Works", href: "#how-it-works" },
   { name: "About", href: "#about" },
+  { name: "Learn", href: "/learn", isRoute: true },
   { name: "Download", href: "/download", isRoute: true },
 ];
 
