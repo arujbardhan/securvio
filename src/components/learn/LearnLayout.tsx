@@ -1,79 +1,55 @@
 import { ReactNode } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { LayoutDashboard, BookOpen, LogOut } from "lucide-react";
-import securvioLogo from "@/assets/securvio-logo.png";
+import { Link, useLocation } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import { Helmet } from "react-helmet-async";
 
-const LearnLayout = ({ children }: { children: ReactNode }) => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+const tabs = [
+  { to: "/learn", label: "Overview" },
+  { to: "/learn/flashcards", label: "Flashcards" },
+  { to: "/learn/matching", label: "Matching" },
+  { to: "/learn/quiz", label: "Quiz" },
+  { to: "/learn/fill-blank", label: "Fill in the Blank" },
+];
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/learn/auth");
-  };
+interface Props {
+  children: ReactNode;
+  title?: string;
+  description?: string;
+}
 
+export default function LearnLayout({ children, title = "Securvio Learn", description = "Fast, free cybersecurity study tools: flashcards, matching, quizzes, and fill-in-the-blank." }: Props) {
+  const { pathname } = useLocation();
   return (
-    <div className="min-h-screen bg-background">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+    <>
+      <Helmet>
+        <title>{title} | Securvio</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={typeof window !== "undefined" ? window.location.href : "https://securvio.lovable.app/learn"} />
+      </Helmet>
+      <Navbar />
+      <main className="min-h-screen bg-background text-foreground pt-28 md:pt-32 pb-20">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link to="/" className="flex items-center gap-3">
-              <img
-                src={securvioLogo}
-                alt="Securvio"
-                className="h-12 w-auto rounded-lg"
-                style={{ backgroundColor: "hsl(222, 47%, 6%)" }}
-              />
-              <span className="hidden sm:inline text-sm font-medium text-muted-foreground border-l border-border pl-3">
-                Learn
-              </span>
-            </Link>
-
-            <div className="flex items-center gap-2 md:gap-6">
-              {user && (
-                <>
-                  <NavLink
-                    to="/learn/dashboard"
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 text-sm font-medium transition-colors ${
-                        isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                      }`
-                    }
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span className="hidden sm:inline">Dashboard</span>
-                  </NavLink>
-                  <NavLink
-                    to="/learn/courses"
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 text-sm font-medium transition-colors ${
-                        isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                      }`
-                    }
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">Courses</span>
-                  </NavLink>
-                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Sign out</span>
-                  </Button>
-                </>
-              )}
-              {!user && (
-                <Link to="/learn/auth">
-                  <Button size="sm">Sign in</Button>
+          <nav className="mb-8 flex flex-wrap gap-2">
+            {tabs.map((t) => {
+              const active = pathname === t.to;
+              return (
+                <Link
+                  key={t.to}
+                  to={t.to}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                      : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/50"
+                  }`}
+                >
+                  {t.label}
                 </Link>
-              )}
-            </div>
-          </div>
+              );
+            })}
+          </nav>
+          {children}
         </div>
-      </nav>
-      <main className="pt-24 pb-16">{children}</main>
-    </div>
+      </main>
+    </>
   );
-};
-
-export default LearnLayout;
+}
