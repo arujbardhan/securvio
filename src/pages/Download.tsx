@@ -419,15 +419,50 @@ const Download = () => {
               <h3 className="text-xl font-semibold font-display mb-4">Demo Package Available</h3>
               <p className="text-muted-foreground mb-8">
                 Download the Securvio Enterprise Suite demo to explore our platform capabilities.
+                A valid access key is required.
               </p>
-              <a
-                href="/downloads/securvio-enterprise.zip"
-                download="securvio-enterprise.zip"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
-              >
-                <DownloadIcon className="w-5 h-5" />
-                Download Demo
-              </a>
+
+              {!downloadUnlocked ? (
+                <form onSubmit={handleUnlock} className="max-w-md mx-auto">
+                  <label htmlFor="access-key" className="block text-sm font-medium mb-2 text-left">
+                    Enterprise Access Key <span className="text-primary">*</span>
+                  </label>
+                  <div className="relative mb-4">
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      id="access-key"
+                      type="password"
+                      value={passwordInput}
+                      onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
+                      placeholder="Enter your access key"
+                      autoComplete="off"
+                      className={`w-full pl-12 pr-4 py-3 bg-secondary border rounded-lg text-foreground focus:outline-none transition-colors ${
+                        passwordError ? "border-destructive focus:border-destructive" : "border-border focus:border-primary/50"
+                      }`}
+                    />
+                  </div>
+                  {passwordError && (
+                    <p className="text-sm text-destructive mb-4">Invalid access key. Please try again.</p>
+                  )}
+                  <button
+                    type="submit"
+                    className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg"
+                  >
+                    <Lock className="w-5 h-5" />
+                    Unlock Download
+                  </button>
+                </form>
+              ) : (
+                <a
+                  href="/downloads/securvio-enterprise.zip"
+                  download="securvio-enterprise.zip"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
+                >
+                  <DownloadIcon className="w-5 h-5" />
+                  Download Enterprise Suite
+                </a>
+              )}
+
               <p className="text-xs text-muted-foreground mt-6">
                 This demo package is for evaluation purposes only. Contact <a href="mailto:support@securvio.com" className="text-primary hover:underline">support@securvio.com</a> for production licensing.
               </p>
