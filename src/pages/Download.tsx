@@ -1,16 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Shield, Lock, Cloud, Search, Download as DownloadIcon, CheckCircle, 
-  ArrowRight, ChevronDown, Sparkles,
+import {
+  Shield, Lock, Cloud, Search, Download as DownloadIcon, CheckCircle,
+  ArrowRight, ChevronDown, Sparkles, KeyRound,
   Network, Database, Mail, Phone, User, Building, MessageSquare
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import securvioLogo from "@/assets/securvio-logo.png";
+import Navbar from "@/components/Navbar";
+
+const DOWNLOAD_PASSWORD = "securent";
 
 const Download = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [downloadUnlocked, setDownloadUnlocked] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput.trim().toLowerCase() === DOWNLOAD_PASSWORD) {
+      setDownloadUnlocked(true);
+      setPasswordError(false);
+      toast({ title: "Access granted", description: "You may now download the Enterprise Suite." });
+    } else {
+      setPasswordError(true);
+      toast({ title: "Invalid key", description: "The access key you entered is incorrect.", variant: "destructive" });
+    }
+  };
   
   // Form state
   const [formData, setFormData] = useState({
@@ -65,79 +83,7 @@ const Download = () => {
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] animate-pulse delay-500" />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link to="/" className="flex items-center gap-2">
-              <img 
-                src={securvioLogo} 
-                alt="Securvio" 
-                className="h-12 w-auto rounded-lg"
-                style={{ backgroundColor: 'hsl(222, 47%, 6%)' }}
-              />
-            </Link>
-
-            <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection("overview")} className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                Overview
-              </button>
-              <button onClick={() => scrollToSection("demo")} className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                Book Demo
-              </button>
-              <button onClick={() => scrollToSection("download")} className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                Download
-              </button>
-              <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                Home
-              </Link>
-              <button 
-                onClick={() => scrollToSection("demo")}
-                className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium text-sm hover:bg-primary/90 transition-all duration-200 shadow-glow animate-glow-pulse"
-              >
-                Get Started
-              </button>
-            </div>
-
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-foreground"
-            >
-              {isMenuOpen ? (
-                <div className="w-6 h-6 flex flex-col justify-center items-center">
-                  <span className="block w-5 h-0.5 bg-foreground rotate-45 translate-y-0.5" />
-                  <span className="block w-5 h-0.5 bg-foreground -rotate-45 -translate-y-0" />
-                </div>
-              ) : (
-                <div className="w-6 h-6 flex flex-col justify-center gap-1.5">
-                  <span className="block w-5 h-0.5 bg-foreground" />
-                  <span className="block w-5 h-0.5 bg-foreground" />
-                  <span className="block w-5 h-0.5 bg-foreground" />
-                </div>
-              )}
-            </button>
-          </div>
-
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border/50 animate-fade-in">
-              <div className="flex flex-col gap-4">
-                <button onClick={() => scrollToSection("overview")} className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left">
-                  Overview
-                </button>
-                <button onClick={() => scrollToSection("demo")} className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left">
-                  Book Demo
-                </button>
-                <button onClick={() => scrollToSection("download")} className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left">
-                  Download
-                </button>
-                <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors py-2">
-                  Home
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-20">
@@ -473,15 +419,50 @@ const Download = () => {
               <h3 className="text-xl font-semibold font-display mb-4">Demo Package Available</h3>
               <p className="text-muted-foreground mb-8">
                 Download the Securvio Enterprise Suite demo to explore our platform capabilities.
+                A valid access key is required.
               </p>
-              <a
-                href="/downloads/securvio-enterprise.zip"
-                download="securvio-enterprise.zip"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
-              >
-                <DownloadIcon className="w-5 h-5" />
-                Download Demo
-              </a>
+
+              {!downloadUnlocked ? (
+                <form onSubmit={handleUnlock} className="max-w-md mx-auto">
+                  <label htmlFor="access-key" className="block text-sm font-medium mb-2 text-left">
+                    Enterprise Access Key <span className="text-primary">*</span>
+                  </label>
+                  <div className="relative mb-4">
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      id="access-key"
+                      type="password"
+                      value={passwordInput}
+                      onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
+                      placeholder="Enter your access key"
+                      autoComplete="off"
+                      className={`w-full pl-12 pr-4 py-3 bg-secondary border rounded-lg text-foreground focus:outline-none transition-colors ${
+                        passwordError ? "border-destructive focus:border-destructive" : "border-border focus:border-primary/50"
+                      }`}
+                    />
+                  </div>
+                  {passwordError && (
+                    <p className="text-sm text-destructive mb-4">Invalid access key. Please try again.</p>
+                  )}
+                  <button
+                    type="submit"
+                    className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg"
+                  >
+                    <Lock className="w-5 h-5" />
+                    Unlock Download
+                  </button>
+                </form>
+              ) : (
+                <a
+                  href="/downloads/securvio-enterprise.zip"
+                  download="securvio-enterprise.zip"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all duration-300 shadow-glow-lg animate-glow-pulse"
+                >
+                  <DownloadIcon className="w-5 h-5" />
+                  Download Enterprise Suite
+                </a>
+              )}
+
               <p className="text-xs text-muted-foreground mt-6">
                 This demo package is for evaluation purposes only. Contact <a href="mailto:support@securvio.com" className="text-primary hover:underline">support@securvio.com</a> for production licensing.
               </p>
