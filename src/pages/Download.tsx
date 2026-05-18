@@ -1,16 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Shield, Lock, Cloud, Search, Download as DownloadIcon, CheckCircle, 
-  ArrowRight, ChevronDown, Sparkles,
+import {
+  Shield, Lock, Cloud, Search, Download as DownloadIcon, CheckCircle,
+  ArrowRight, ChevronDown, Sparkles, KeyRound,
   Network, Database, Mail, Phone, User, Building, MessageSquare
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import securvioLogo from "@/assets/securvio-logo.png";
+import Navbar from "@/components/Navbar";
+
+const DOWNLOAD_PASSWORD = "securent";
 
 const Download = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [downloadUnlocked, setDownloadUnlocked] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput.trim().toLowerCase() === DOWNLOAD_PASSWORD) {
+      setDownloadUnlocked(true);
+      setPasswordError(false);
+      toast({ title: "Access granted", description: "You may now download the Enterprise Suite." });
+    } else {
+      setPasswordError(true);
+      toast({ title: "Invalid key", description: "The access key you entered is incorrect.", variant: "destructive" });
+    }
+  };
   
   // Form state
   const [formData, setFormData] = useState({
