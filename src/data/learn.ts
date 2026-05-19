@@ -21,6 +21,7 @@ export const CATEGORIES = [
   "NIST Framework",
   "Zero Trust",
   "Endpoint Security",
+  "CompTIA A+ 1101 Fundamentals",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
