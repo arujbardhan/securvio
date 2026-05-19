@@ -270,6 +270,27 @@ export const MATCH_PAIRS: MatchPair[] = [
   { id: "cm32", category: "CompTIA A+ 1101 Fundamentals", left: "UEFI", right: "Modern firmware replacing legacy BIOS" },
   { id: "cm33", category: "CompTIA A+ 1101 Fundamentals", left: "POST", right: "Firmware self-test executed at boot" },
   { id: "cm34", category: "CompTIA A+ 1101 Fundamentals", left: "M.2 NVMe", right: "SSD form factor using PCIe lanes" },
+  // ISC2 CC match pairs
+  { id: "iscm1", category: "ISC2 Certified in Cybersecurity", left: "Confidentiality", right: "Prevent unauthorized disclosure" },
+  { id: "iscm2", category: "ISC2 Certified in Cybersecurity", left: "Integrity", right: "Prevent unauthorized modification" },
+  { id: "iscm3", category: "ISC2 Certified in Cybersecurity", left: "Availability", right: "Ensure timely, reliable access" },
+  { id: "iscm4", category: "ISC2 Certified in Cybersecurity", left: "Something you know", right: "Password or PIN" },
+  { id: "iscm5", category: "ISC2 Certified in Cybersecurity", left: "Something you have", right: "Smart card or token" },
+  { id: "iscm6", category: "ISC2 Certified in Cybersecurity", left: "Something you are", right: "Biometric (fingerprint, iris)" },
+  { id: "iscm7", category: "ISC2 Certified in Cybersecurity", left: "RTO", right: "Max acceptable downtime" },
+  { id: "iscm8", category: "ISC2 Certified in Cybersecurity", left: "RPO", right: "Max acceptable data loss" },
+  { id: "iscm9", category: "ISC2 Certified in Cybersecurity", left: "BCP", right: "Keep business running during disruption" },
+  { id: "iscm10", category: "ISC2 Certified in Cybersecurity", left: "DRP", right: "Restore IT systems after disaster" },
+  { id: "iscm11", category: "ISC2 Certified in Cybersecurity", left: "IDS", right: "Detects and alerts only" },
+  { id: "iscm12", category: "ISC2 Certified in Cybersecurity", left: "IPS", right: "Detects and blocks inline" },
+  { id: "iscm13", category: "ISC2 Certified in Cybersecurity", left: "DAC", right: "Owner-controlled permissions" },
+  { id: "iscm14", category: "ISC2 Certified in Cybersecurity", left: "MAC", right: "Label-based mandatory access" },
+  { id: "iscm15", category: "ISC2 Certified in Cybersecurity", left: "RBAC", right: "Permissions via roles" },
+  { id: "iscm16", category: "ISC2 Certified in Cybersecurity", left: "AES", right: "Symmetric block cipher" },
+  { id: "iscm17", category: "ISC2 Certified in Cybersecurity", left: "RSA", right: "Asymmetric encryption algorithm" },
+  { id: "iscm18", category: "ISC2 Certified in Cybersecurity", left: "SHA-256", right: "Cryptographic hash function" },
+  { id: "iscm19", category: "ISC2 Certified in Cybersecurity", left: "ALE", right: "SLE × ARO" },
+  { id: "iscm20", category: "ISC2 Certified in Cybersecurity", left: "SLE", right: "Asset Value × Exposure Factor" },
 ];
 
 export const MCQS: MCQ[] = [
