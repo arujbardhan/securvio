@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { Shield, MessageSquare, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Shield, MessageSquare, ArrowRight, GraduationCap } from "lucide-react";
 import ParallaxCard from "./ParallaxCard";
 import securvioBanner from "@/assets/securvio-banner.png";
 
