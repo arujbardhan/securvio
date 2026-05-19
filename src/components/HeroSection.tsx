@@ -81,7 +81,7 @@ const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
 
           {/* Trust Indicators */}
           <div className="mt-16 pt-8 border-t border-border/50 animate-fade-up delay-400">
-            <p className="text-sm text-muted-foreground mb-4">Trusted by security-conscious teams</p>
+            <p className="text-sm text-muted-foreground mb-4">Built for students, by students</p>
             <div className="flex items-center justify-center gap-4 md:gap-8 flex-wrap">
               {["DevSecOps", "SOC 2", "NIST", "ISO 27001", "GDPR"].map((badge) => (
                 <span 
