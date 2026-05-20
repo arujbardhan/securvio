@@ -381,7 +381,6 @@ export const MATCH_PAIRS: MatchPair[] = [
   { id: "gcm31", category: "General Cybersecurity", left: "Cyber Kill Chain", right: "Model of attack stages from recon to exfiltration" },
   { id: "gcm32", category: "General Cybersecurity", left: "Least Privilege", right: "Users get minimum permissions required" },
 ];
-];
 
 export const MCQS: MCQ[] = [
   {
