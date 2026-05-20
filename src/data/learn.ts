@@ -23,6 +23,7 @@ export const CATEGORIES = [
   "Endpoint Security",
   "CompTIA A+ 1101 Fundamentals",
   "ISC2 Certified in Cybersecurity",
+  "CompTIA Security+ SY0-301",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
