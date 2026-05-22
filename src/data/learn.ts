@@ -262,6 +262,120 @@ export const FLASHCARDS: Flashcard[] = [
   { id: "iv28", category: "Cybersecurity Interview Prep", term: "Port Blocking", definition: "Restricting users from accessing certain services within a LAN by blocking specific ports." },
   { id: "iv29", category: "Cybersecurity Interview Prep", term: "Patch Management", definition: "Process of acquiring, testing, and applying software patches promptly after release." },
   { id: "iv30", category: "Cybersecurity Interview Prep", term: "DLP", definition: "Data Loss Prevention — tools and strategies to detect and stop unauthorized data exfiltration." },
+  // ===== Backfill flashcards to ensure each category has >= 20 items =====
+  // HIPAA Compliance (+13)
+  { id: "hf1", category: "HIPAA Compliance", term: "Privacy Rule", definition: "HIPAA rule that sets national standards for the protection of PHI." },
+  { id: "hf2", category: "HIPAA Compliance", term: "Security Rule", definition: "HIPAA rule requiring administrative, physical, and technical safeguards for ePHI." },
+  { id: "hf3", category: "HIPAA Compliance", term: "Breach Notification Rule", definition: "Requires notification to individuals, HHS, and sometimes media after a breach of unsecured PHI." },
+  { id: "hf4", category: "HIPAA Compliance", term: "Minimum Necessary", definition: "Use or disclose only the minimum PHI needed to accomplish the intended purpose." },
+  { id: "hf5", category: "HIPAA Compliance", term: "TPO", definition: "Treatment, Payment, and Health Care Operations — uses of PHI that don't require authorization." },
+  { id: "hf6", category: "HIPAA Compliance", term: "NPP", definition: "Notice of Privacy Practices — informs patients how their PHI may be used and disclosed." },
+  { id: "hf7", category: "HIPAA Compliance", term: "BAA", definition: "Business Associate Agreement — contract obligating a vendor to safeguard PHI." },
+  { id: "hf8", category: "HIPAA Compliance", term: "ePHI", definition: "Electronic Protected Health Information — PHI created, received, stored, or transmitted electronically." },
+  { id: "hf9", category: "HIPAA Compliance", term: "HITECH Act", definition: "2009 law that strengthened HIPAA enforcement and breach notification requirements." },
+  { id: "hf10", category: "HIPAA Compliance", term: "OCR", definition: "Office for Civil Rights — HHS agency that enforces HIPAA Privacy and Security Rules." },
+  { id: "hf11", category: "HIPAA Compliance", term: "De-identification", definition: "Removing identifiers (Safe Harbor or Expert Determination) so data is no longer PHI." },
+  { id: "hf12", category: "HIPAA Compliance", term: "Safe Harbor Method", definition: "De-identification by removing 18 specified identifiers from a data set." },
+  { id: "hf13", category: "HIPAA Compliance", term: "Risk Analysis", definition: "Required Security Rule assessment of risks and vulnerabilities to ePHI confidentiality, integrity, and availability." },
+
+  // Compliance Frameworks (SOC 2 & ISO 27001) (+6)
+  { id: "cf1", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Statement of Applicability", definition: "ISO 27001 document listing which Annex A controls apply and justifying inclusions/exclusions." },
+  { id: "cf2", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Stage 1 vs Stage 2 Audit", definition: "Stage 1 reviews documentation readiness; Stage 2 evaluates implementation and effectiveness." },
+  { id: "cf3", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Bridge Letter", definition: "Vendor letter covering the gap between a SOC 2 report's end date and the requesting party's reporting date." },
+  { id: "cf4", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Carve-out vs Inclusive", definition: "Two methods for handling subservice organizations in a SOC 2 report." },
+  { id: "cf5", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Common Criteria (CC)", definition: "Baseline SOC 2 criteria all engagements must meet, mapped to the Security category." },
+  { id: "cf6", category: "Compliance Frameworks (SOC 2 & ISO 27001)", term: "Internal Audit", definition: "Independent review of an ISMS required by ISO 27001 clause 9.2 before certification audits." },
+
+  // Risk & Vulnerability Management (+9)
+  { id: "rv1", category: "Risk & Vulnerability Management", term: "Risk Register", definition: "Living document that tracks identified risks, owners, treatments, and status." },
+  { id: "rv2", category: "Risk & Vulnerability Management", term: "Risk Appetite", definition: "Amount and type of risk an organization is willing to accept in pursuit of objectives." },
+  { id: "rv3", category: "Risk & Vulnerability Management", term: "Qualitative Assessment", definition: "Risk rating using descriptive scales (Low/Med/High) rather than numeric values." },
+  { id: "rv4", category: "Risk & Vulnerability Management", term: "Quantitative Assessment", definition: "Risk analysis using numerical values such as ALE = SLE × ARO." },
+  { id: "rv5", category: "Risk & Vulnerability Management", term: "Risk Treatment Options", definition: "Accept, Avoid, Transfer (share), or Mitigate (reduce) a risk." },
+  { id: "rv6", category: "Risk & Vulnerability Management", term: "CVE", definition: "Common Vulnerabilities and Exposures — public identifier for a known vulnerability." },
+  { id: "rv7", category: "Risk & Vulnerability Management", term: "Zero-Day", definition: "Vulnerability unknown to the vendor with no patch available at time of discovery/exploit." },
+  { id: "rv8", category: "Risk & Vulnerability Management", term: "Authenticated Scan", definition: "Vulnerability scan run with valid credentials to see installed software and config issues." },
+  { id: "rv9", category: "Risk & Vulnerability Management", term: "SLA for Remediation", definition: "Agreed time frame to fix vulnerabilities by severity (e.g., Critical < 15 days)." },
+
+  // Phishing & Security Awareness (+10)
+  { id: "ph1", category: "Phishing & Security Awareness", term: "Smishing", definition: "Phishing conducted via SMS text messages." },
+  { id: "ph2", category: "Phishing & Security Awareness", term: "Vishing", definition: "Voice phishing — fraud conducted over phone calls." },
+  { id: "ph3", category: "Phishing & Security Awareness", term: "BEC", definition: "Business Email Compromise — impersonating executives or vendors to trigger fraudulent transfers." },
+  { id: "ph4", category: "Phishing & Security Awareness", term: "Clone Phishing", definition: "Replicating a legitimate prior email and replacing links/attachments with malicious ones." },
+  { id: "ph5", category: "Phishing & Security Awareness", term: "Pretexting", definition: "Fabricating a believable scenario to manipulate a target into divulging information." },
+  { id: "ph6", category: "Phishing & Security Awareness", term: "Baiting", definition: "Leaving infected media (e.g., USB) or offering enticing downloads to lure victims." },
+  { id: "ph7", category: "Phishing & Security Awareness", term: "Tailgating", definition: "Following an authorized person through a secured door without authentication." },
+  { id: "ph8", category: "Phishing & Security Awareness", term: "DMARC", definition: "Email authentication policy built on SPF and DKIM to combat spoofing." },
+  { id: "ph9", category: "Phishing & Security Awareness", term: "Security Champion", definition: "Embedded team member who promotes secure practices within a business unit." },
+  { id: "ph10", category: "Phishing & Security Awareness", term: "Click Rate", definition: "Key metric in phishing simulations — percent of users who clicked the simulated lure." },
+
+  // Malware & Endpoint Security (+9)
+  { id: "me1", category: "Malware & Endpoint Security", term: "Worm", definition: "Self-replicating malware that spreads across networks without user interaction." },
+  { id: "me2", category: "Malware & Endpoint Security", term: "Trojan", definition: "Malicious program disguised as legitimate software." },
+  { id: "me3", category: "Malware & Endpoint Security", term: "Spyware", definition: "Software that secretly monitors user activity and exfiltrates data." },
+  { id: "me4", category: "Malware & Endpoint Security", term: "Keylogger", definition: "Captures keystrokes to steal credentials and sensitive input." },
+  { id: "me5", category: "Malware & Endpoint Security", term: "Fileless Malware", definition: "Runs in memory using legitimate tools (e.g., PowerShell) without writing files to disk." },
+  { id: "me6", category: "Malware & Endpoint Security", term: "XDR", definition: "Extended Detection and Response — correlates telemetry across endpoint, network, cloud, and identity." },
+  { id: "me7", category: "Malware & Endpoint Security", term: "MDM", definition: "Mobile Device Management — controls configuration, apps, and policies on mobile endpoints." },
+  { id: "me8", category: "Malware & Endpoint Security", term: "Application Allowlisting", definition: "Only pre-approved applications are permitted to execute on endpoints." },
+  { id: "me9", category: "Malware & Endpoint Security", term: "HIPS", definition: "Host-based Intrusion Prevention System — blocks malicious behavior on a single endpoint." },
+
+  // Incident Response & BCDR (+7)
+  { id: "ir1", category: "Incident Response & BCDR", term: "Containment", definition: "Limiting the scope and impact of an incident, often by isolating affected systems." },
+  { id: "ir2", category: "Incident Response & BCDR", term: "Eradication", definition: "Removing malware, attacker tools, and root cause from affected systems." },
+  { id: "ir3", category: "Incident Response & BCDR", term: "Chain of Custody", definition: "Documentation tracking the handling of evidence to preserve integrity for legal proceedings." },
+  { id: "ir4", category: "Incident Response & BCDR", term: "Tabletop Exercise", definition: "Discussion-based simulation that walks responders through an incident scenario." },
+  { id: "ir5", category: "Incident Response & BCDR", term: "BIA", definition: "Business Impact Analysis — identifies critical processes and the impact of disruption." },
+  { id: "ir6", category: "Incident Response & BCDR", term: "Hot Site", definition: "Fully equipped, ready-to-run alternate facility with near-real-time data replication." },
+  { id: "ir7", category: "Incident Response & BCDR", term: "MTTR", definition: "Mean Time To Respond/Recover — average time to restore service after detection." },
+
+  // Network Security & SIEM/SOC (+8)
+  { id: "nw1", category: "Network Security & SIEM/SOC", term: "NGFW", definition: "Next-Generation Firewall — adds deep packet inspection, app awareness, and IPS to traditional firewalling." },
+  { id: "nw2", category: "Network Security & SIEM/SOC", term: "WAF", definition: "Web Application Firewall — filters HTTP(S) traffic to protect web apps from OWASP-class attacks." },
+  { id: "nw3", category: "Network Security & SIEM/SOC", term: "SOAR", definition: "Security Orchestration, Automation, and Response — playbooks that automate SOC workflows." },
+  { id: "nw4", category: "Network Security & SIEM/SOC", term: "MITRE ATT&CK", definition: "Knowledge base of adversary tactics, techniques, and procedures used for detection mapping." },
+  { id: "nw5", category: "Network Security & SIEM/SOC", term: "Tier 1 Analyst", definition: "SOC role focused on alert triage and initial investigation." },
+  { id: "nw6", category: "Network Security & SIEM/SOC", term: "Threat Hunting", definition: "Proactive search through telemetry for adversary behavior that evaded automated detection." },
+  { id: "nw7", category: "Network Security & SIEM/SOC", term: "DMZ", definition: "Demilitarized Zone — perimeter network segment hosting externally exposed services." },
+  { id: "nw8", category: "Network Security & SIEM/SOC", term: "Network Segmentation", definition: "Dividing a network into zones to limit lateral movement and blast radius." },
+
+  // Access Control & Zero Trust (+8)
+  { id: "ac1", category: "Access Control & Zero Trust", term: "ABAC", definition: "Attribute-Based Access Control — decisions based on user, resource, and environment attributes." },
+  { id: "ac2", category: "Access Control & Zero Trust", term: "MAC", definition: "Mandatory Access Control — system-enforced policy based on classifications and clearances." },
+  { id: "ac3", category: "Access Control & Zero Trust", term: "DAC", definition: "Discretionary Access Control — resource owner decides who gets access." },
+  { id: "ac4", category: "Access Control & Zero Trust", term: "MFA", definition: "Multi-Factor Authentication — requires two or more independent factors to authenticate." },
+  { id: "ac5", category: "Access Control & Zero Trust", term: "SSO", definition: "Single Sign-On — one authentication grants access to multiple integrated applications." },
+  { id: "ac6", category: "Access Control & Zero Trust", term: "JIT Access", definition: "Just-In-Time access — privileges granted only for the time needed to perform a task." },
+  { id: "ac7", category: "Access Control & Zero Trust", term: "Microsegmentation", definition: "Fine-grained network policies isolating workloads, central to Zero Trust." },
+  { id: "ac8", category: "Access Control & Zero Trust", term: "ZTNA", definition: "Zero Trust Network Access — identity-aware, application-level access replacing legacy VPN." },
+
+  // Encryption (+12)
+  { id: "en1", category: "Encryption", term: "AES", definition: "Advanced Encryption Standard — symmetric block cipher using 128/192/256-bit keys." },
+  { id: "en2", category: "Encryption", term: "RSA", definition: "Asymmetric algorithm based on the difficulty of factoring large primes." },
+  { id: "en3", category: "Encryption", term: "ECC", definition: "Elliptic Curve Cryptography — strong asymmetric security with smaller keys than RSA." },
+  { id: "en4", category: "Encryption", term: "TLS", definition: "Transport Layer Security — protocol providing encrypted, authenticated channels over a network." },
+  { id: "en5", category: "Encryption", term: "Hashing", definition: "One-way function producing a fixed-size digest used for integrity and password storage." },
+  { id: "en6", category: "Encryption", term: "SHA-256", definition: "Cryptographic hash function producing a 256-bit digest, part of the SHA-2 family." },
+  { id: "en7", category: "Encryption", term: "HMAC", definition: "Keyed-hash message authentication code providing integrity and authenticity." },
+  { id: "en8", category: "Encryption", term: "PKI", definition: "Public Key Infrastructure — system of CAs, certificates, and policies that manages asymmetric keys." },
+  { id: "en9", category: "Encryption", term: "Digital Signature", definition: "Hash of a message encrypted with a private key, providing authenticity and non-repudiation." },
+  { id: "en10", category: "Encryption", term: "Key Rotation", definition: "Regularly replacing cryptographic keys to limit exposure from key compromise." },
+  { id: "en11", category: "Encryption", term: "HSM", definition: "Hardware Security Module — tamper-resistant device that securely stores and manages keys." },
+  { id: "en12", category: "Encryption", term: "Perfect Forward Secrecy", definition: "Session keys cannot be derived even if long-term keys are later compromised." },
+
+  // Cloud Security & NIST Framework (+12)
+  { id: "cn1", category: "Cloud Security & NIST Framework", term: "IAM", definition: "Identity and Access Management — cloud service that controls who can access what resources." },
+  { id: "cn2", category: "Cloud Security & NIST Framework", term: "CSPM", definition: "Cloud Security Posture Management — detects misconfigurations across cloud resources." },
+  { id: "cn3", category: "Cloud Security & NIST Framework", term: "CWPP", definition: "Cloud Workload Protection Platform — secures VMs, containers, and serverless workloads." },
+  { id: "cn4", category: "Cloud Security & NIST Framework", term: "CASB", definition: "Cloud Access Security Broker — enforces security policies between users and cloud services." },
+  { id: "cn5", category: "Cloud Security & NIST Framework", term: "IaaS / PaaS / SaaS", definition: "Cloud service models with shifting customer responsibility for OS, runtime, and data." },
+  { id: "cn6", category: "Cloud Security & NIST Framework", term: "S3 Bucket Policy", definition: "Resource-based policy controlling access to an AWS S3 bucket; misconfig is a top breach cause." },
+  { id: "cn7", category: "Cloud Security & NIST Framework", term: "NIST CSF Identify", definition: "Develop organizational understanding to manage cybersecurity risk to systems and data." },
+  { id: "cn8", category: "Cloud Security & NIST Framework", term: "NIST CSF Protect", definition: "Develop and implement safeguards to ensure delivery of critical services." },
+  { id: "cn9", category: "Cloud Security & NIST Framework", term: "NIST CSF Detect", definition: "Develop and implement activities to identify the occurrence of a cybersecurity event." },
+  { id: "cn10", category: "Cloud Security & NIST Framework", term: "NIST CSF Respond", definition: "Take action regarding a detected cybersecurity incident." },
+  { id: "cn11", category: "Cloud Security & NIST Framework", term: "NIST CSF Recover", definition: "Maintain plans for resilience and restore capabilities impaired by an incident." },
+  { id: "cn12", category: "Cloud Security & NIST Framework", term: "NIST SP 800-53", definition: "Catalog of security and privacy controls for federal information systems and organizations." },
 ];
 
 export const MATCH_PAIRS: MatchPair[] = [
