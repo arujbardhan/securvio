@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import LearnLayout from "@/components/learn/LearnLayout";
-import { Layers, Shuffle, ListChecks, Type, Sparkles } from "lucide-react";
+import { Layers, Shuffle, ListChecks, Type, Sparkles, FlaskConical, ArrowRight } from "lucide-react";
 import { CATEGORIES, FLASHCARDS, MCQS, MATCH_PAIRS, FILL_BLANKS } from "@/data/learn";
 
 const modes = [
@@ -43,6 +43,29 @@ export default function Hub() {
             <p className="text-sm text-muted-foreground">{m.desc}</p>
           </Link>
         ))}
+      </section>
+
+      <section className="mb-16">
+        <Link
+          to="/labs"
+          className="group glass-card p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-5 hover:border-primary/60 transition-all hover:shadow-glow"
+        >
+          <div className="w-14 h-14 shrink-0 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+            <FlaskConical className="w-7 h-7" />
+          </div>
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-[11px] font-medium mb-2">
+              Hands-on Labs
+            </div>
+            <h3 className="text-xl font-semibold mb-1">Ready to go beyond the terminology?</h3>
+            <p className="text-sm text-muted-foreground">
+              Explore real-world environments built, monitored, and defended end-to-end — like the full Cybersecurity HomeLab.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all whitespace-nowrap">
+            Explore Labs <ArrowRight className="w-4 h-4" />
+          </span>
+        </Link>
       </section>
 
       <section>

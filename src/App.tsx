@@ -12,6 +12,9 @@ import Flashcards from "./pages/learn/Flashcards";
 import Matching from "./pages/learn/Matching";
 import Quiz from "./pages/learn/Quiz";
 import FillBlank from "./pages/learn/FillBlank";
+import LabsHub from "./pages/labs/Hub";
+import LabDetail from "./pages/labs/LabDetail";
+import SiemChallenge from "./pages/labs/SiemChallenge";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +33,9 @@ const App = () => (
             <Route path="/learn/matching" element={<Matching />} />
             <Route path="/learn/quiz" element={<Quiz />} />
             <Route path="/learn/fill-blank" element={<FillBlank />} />
+            <Route path="/labs" element={<LabsHub />} />
+            <Route path="/labs/siem-detection" element={<SiemChallenge />} />
+            <Route path="/labs/:slug" element={<LabDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

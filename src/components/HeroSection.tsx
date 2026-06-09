@@ -10,30 +10,30 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onOpenChat }: HeroSectionProps) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-28 md:pt-32 pb-16 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 grid-pattern opacity-40" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] max-w-full bg-primary/10 rounded-full blur-[150px]" />
       
-      {/* Floating Security Icons - Parallax - adjusted positions to not cut off */}
-      <div className="absolute top-1/3 left-16 lg:left-24 hidden md:block">
-        <ParallaxCard intensity={25}>
+      {/* Floating Security Icons - Parallax */}
+      <div className="absolute top-1/3 left-6 lg:left-20 hidden lg:block">
+        <ParallaxCard intensity={12}>
           <div className="glass-card p-4 animate-float">
             <Shield className="w-8 h-8 text-primary" />
           </div>
         </ParallaxCard>
       </div>
       
-      <div className="absolute top-1/2 right-16 lg:right-24 hidden md:block">
-        <ParallaxCard intensity={30}>
+      <div className="absolute top-1/2 right-6 lg:right-20 hidden lg:block">
+        <ParallaxCard intensity={14}>
           <div className="glass-card p-4 animate-float delay-200">
             <MessageSquare className="w-8 h-8 text-primary" />
           </div>
         </ParallaxCard>
       </div>
 
-      <div className="absolute bottom-1/3 left-1/4 hidden lg:block">
-        <ParallaxCard intensity={20}>
+      <div className="absolute bottom-1/4 left-[12%] hidden xl:block">
+        <ParallaxCard intensity={10}>
           <div className="glass-card px-4 py-2 animate-float delay-400">
             <span className="text-sm text-primary font-medium">AI-Powered</span>
           </div>
